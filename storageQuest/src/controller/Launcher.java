@@ -7,8 +7,10 @@ import models.Warehouse;
 import models.WarehouseList;
 /*later will need to import the models and views*/
 
-
-//starts the whole thing
+/* CS 4743 Assignment 1 by Joshua Fajardo
+ * 
+ * this starts the whole thing
+ */
 public class Launcher {
 
 	public static void createAndShowGIU(){
