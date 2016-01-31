@@ -13,7 +13,16 @@ import models.WarehouseList;
  */
 public class Launcher {
 
-	public static void createAndShowGIU(){
+	public static void createAndShowGUI(){
+		
+		WarehouseList warehouseList = new WarehouseList();
+		
+		warehouseList.addWarehouseToList(new Warehouse("Dunder Mifflin",
+				"123 Paper St.",
+				"Scanton",
+				"Pennsylvania",
+				"18504",
+				100));
 		
 		
 		
@@ -23,8 +32,10 @@ public class Launcher {
 	
 	
 	public static void main(String[] args) {
-		
-		System.out.println("hello World");
-		
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run() {
+				createAndShowGUI();
+			}
+		});
 	}
 }
