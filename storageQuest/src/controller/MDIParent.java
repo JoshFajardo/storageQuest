@@ -40,6 +40,7 @@ public class MDIParent extends JFrame{
 	public MDIParent (String title, WarehouseList wList){
 		super(title);
 		
+		
 		warehouseList = wList;
 		
 		openViews = new LinkedList<MDIChild>();
@@ -60,6 +61,7 @@ public class MDIParent extends JFrame{
 	
 	
 	public void doCommand(MenuCommands cmd, Container caller){
+		
 		switch(cmd){
 		case APP_QUIT:
 			closeChildren();
@@ -76,9 +78,21 @@ public class MDIParent extends JFrame{
 			openMDIChild(v);
 			break;
 		case ADD_WAREHOUSE:
-			//WarehouseList wl = new WarehouseList();
-
+			warehouseList.addWarehouseToList(new Warehouse("New_Entry " ,
+					"<add>",
+					"<add>",
+					"<add>",
+					"00000",
+					0));
+			//WarehouseListView v2 = new WarehouseListView("Warehouse List", new WarehouseListController(warehouseList),this);
 			//openMDIChild(v2);
+			displayChildMessage("New Warehouse Created!");
+			
+			break;
+		case DELETE_WAREHOUSE:
+			Warehouse dw = ((WarehouseListView)caller).getSelectedWarehouse();
+			warehouseList.removeWarehouseFromList(dw);
+			
 		
 		}
 	}

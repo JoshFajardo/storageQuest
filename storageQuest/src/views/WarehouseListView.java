@@ -22,6 +22,7 @@ import controller.MenuCommands;
 import controller.WarehouseListController;
 import models.Warehouse;
 
+
 public class WarehouseListView extends MDIChild{
 
 	private JList<Warehouse> listWarehouse;
@@ -54,6 +55,7 @@ public class WarehouseListView extends MDIChild{
 		this.add(new JScrollPane(listWarehouse));
 		
 		this.setPreferredSize(new Dimension(240,200));
+		
 		
 		
 	}

@@ -17,7 +17,9 @@ import javax.swing.JTextField;
 
 import controller.MDIChild;
 import controller.MDIParent;
+import controller.MenuCommands;
 import models.Warehouse;
+import models.WarehouseList;
 
 public class WarehouseDetailView extends MDIChild implements Observer{
 
@@ -81,6 +83,18 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 	panel.add(saveButton);
 	this.add(panel, BorderLayout.SOUTH);
 	
+	panel.setLayout(new FlowLayout());
+	JButton deleteButton = new JButton("Delete!");
+	deleteButton.addActionListener(new ActionListener(){
+		@Override
+		public void actionPerformed(ActionEvent e){
+			deleteWarehouse();
+			
+		}
+	});
+	panel.add(deleteButton);
+	this.add(panel,BorderLayout.SOUTH);
+	
 	refreshFields();
 	
 	this.setPreferredSize(new Dimension(360, 210));
@@ -97,6 +111,13 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 		fldStorageCap.setText(myWarehouse.getStorageCapacity().toString());
 		
 		this.setTitle(myWarehouse.getWarehouseName());
+	}
+	
+	public void deleteWarehouse(){
+		parent.doCommand(MenuCommands.DELETE_WAREHOUSE,this);
+		
+		
+		
 	}
 	
 	
