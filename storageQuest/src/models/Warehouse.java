@@ -33,7 +33,7 @@ public class Warehouse extends Observable{
 		storageCapacity = 0;
 	}
 	
-	public Warehouse (String wn, String ad, String ct, String st, String zip, int sc){
+	public Warehouse (String wn, String ad, String ct, String st, String zip){
 		this ();
 		if(!validWarehouseName(wn))
 			throw new IllegalArgumentException("Invalid warehouse name!");
@@ -45,15 +45,18 @@ public class Warehouse extends Observable{
 			throw new IllegalArgumentException("Invalid State!");
 		if(!validZip(zip))
 			throw new IllegalArgumentException("Invalid Zip!");
-		if(!validStorageCapacity(sc))
-			throw new IllegalArgumentException("Invalid Storage Capacity!");
+		
 		warehouseName = wn;
 		address = ad;
 		city = ct;
 		state = st;
 		this.zip = zip;
-		storageCapacity = sc;
+		
 			
+	}
+	public Warehouse(String wn, String ad, String ct, String st, String zip, int sc){
+		this(wn,ad,ct,st,zip);
+		this.storageCapacity = sc;
 	}
 	
 	public long getId(){

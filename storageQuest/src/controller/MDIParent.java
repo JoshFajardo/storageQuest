@@ -75,8 +75,10 @@ public class MDIParent extends JFrame{
 			WarehouseDetailView v = new WarehouseDetailView(w.getFullName(),w,this);
 			openMDIChild(v);
 			break;
-		
-		
+		case ADD_WAREHOUSE:
+			//WarehouseList wl = new WarehouseList();
+
+			//openMDIChild(v2);
 		
 		}
 	}

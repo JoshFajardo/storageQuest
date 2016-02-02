@@ -36,7 +36,7 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 	myWarehouse.addObserver(this);
 	
 	JPanel panel = new JPanel();
-	panel.setLayout(new GridLayout(5,2));
+	panel.setLayout(new GridLayout(7,2));
 	
 	
 	panel.add(new JLabel("Id"));
@@ -163,9 +163,16 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 		myWarehouse.finishUpdate();
 		parent.displayChildMessage("Changes Saved");
 		}
-		@Override
-		public void update(Observable o, Object arg){
+	@Override
+	protected void childClosing(){
+		super.childClosing();
+		
+		myWarehouse.deleteObserver(this);
+	}
+	@Override
+	public void update(Observable o, Object arg){
 			refreshFields();
 	}
+	
 }
 	

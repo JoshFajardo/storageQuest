@@ -17,7 +17,17 @@ public class MDIMenu extends JMenuBar {
 		this.parent = w;
 		
 		JMenu menu = new JMenu("File");
-		JMenuItem menuItem = new JMenuItem("Quit");
+		JMenuItem menuItem = new JMenuItem("Add a Warehouse");
+		menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				parent.doCommand(MenuCommands.ADD_WAREHOUSE, null);
+			}
+		});
+		menu.add(menuItem);
+		this.add(menu);
+
+		menuItem = new JMenuItem("Quit");
 		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -25,7 +35,8 @@ public class MDIMenu extends JMenuBar {
 			}
 		});
 		menu.add(menuItem);
-		this.add(menu);
+		this.add(menu);	
+		
 		
 		menu = new JMenu("Warehouses");
 		menuItem = new JMenuItem("Warehouse List");
@@ -37,5 +48,9 @@ public class MDIMenu extends JMenuBar {
 		});
 		menu.add(menuItem);
 		this.add(menu);		
+		
+		
+		
+		
 	}
 }
