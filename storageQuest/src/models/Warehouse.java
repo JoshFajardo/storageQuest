@@ -178,6 +178,12 @@ public class Warehouse extends Observable{
 		setChanged();
 	}
 	
+	public String getFullName(){
+		String ret = warehouseName;
+		if(ret.trim().length() == 0)
+			ret = "unknown";
+		return ret;
+	}
 
 	public void finishUpdate() {
 		notifyObservers();

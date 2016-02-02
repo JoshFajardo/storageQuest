@@ -24,6 +24,8 @@ import javax.swing.JPanel;
 
 import models.Warehouse;
 import models.WarehouseList;
+import views.WarehouseDetailView;
+import views.WarehouseListView;
 
 
 public class MDIParent extends JFrame{
@@ -42,7 +44,7 @@ public class MDIParent extends JFrame{
 		
 		openViews = new LinkedList<MDIChild>();
 		
-		MDIMenu menuBar = new MDIMenu (this);
+		MDIMenu menuBar = new MDIMenu(this);
 		setJMenuBar(menuBar);
 		
 		desktop = new JDesktopPane();
@@ -64,16 +66,98 @@ public class MDIParent extends JFrame{
 			this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 			break;
 		case SHOW_LIST_WAREHOUSE:
-			WarehouseListView v1 = new WarehouseListView("Warehouse List", new WarehouseListController(WarehouseList),this);
+			WarehouseListView v1 = new WarehouseListView("Warehouse List", new WarehouseListController(warehouseList),this);
 			
+			openMDIChild(v1);
+			break;
+		case SHOW_DETAIL_WAREHOUSE :
+			Warehouse w = ((WarehouseListView) caller).getSelectedWarehouse();
+			WarehouseDetailView v = new WarehouseDetailView(w.getFullName(),w,this);
+			openMDIChild(v);
+			break;
 		
 		
 		
 		}
 	}
+	public void closeChildren() {
+		JInternalFrame [] children = desktop.getAllFrames();
+		for(int i = children.length - 1; i >= 0; i--) {
+			children[i].dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+			//as each child window closes, it will call its closeChild() method to clean itself up
+		}
+	}
+
+	/**
+	 * Child windows are already closing so we just need to tell the child panels to clean up.
+	 * This can happen when the JVM closes
+	 */
+	public void cleanupChildPanels() {
+		JInternalFrame [] children = desktop.getAllFrames();
+		for(int i = children.length - 1; i >= 0; i--) {
+			if(children[i] instanceof MDIChildFrame)
+				((MDIChildFrame) children[i]).closeChild();
+		}
+	}
+	
+	/**
+	 * this method will always be called when the app quits since it hooks into the VM
+	 */
+	public void closeProperly() {
+		cleanupChildPanels();
+	}
+
+	/**
+	 * create the child panel, insert it into a JInternalFrame and show it
+	 * @param child
+	 * @return
+	 */
+	public JInternalFrame openMDIChild(MDIChild child) {
+		//first, if child's class is single open only and already open,
+		//then restore and show that child
+		//System.out.println(openViewNames.contains(child));
+		if(child.isSingleOpenOnly()) {
+			for(MDIChild testChild : openViews) {
+				if(testChild.getClass().getSimpleName().equals(child.getClass().getSimpleName())) {
+					try {
+						testChild.restoreWindowState();
+					} catch(PropertyVetoException e) {
+						e.printStackTrace();
+					}
+					JInternalFrame c = (JInternalFrame) testChild.getMDIChildFrame();
+					return c;
+				}
+			}
+		}
+		
+		//create then new frame
+		MDIChildFrame frame = new MDIChildFrame(child.getTitle(), true, true, true, true, child);
+		
+		//pack works but the child panels need to use setPreferredSize to tell pack how much space they need
+		//otherwise, MDI children default to a standard size that I find too small
+		frame.pack();
+		frame.setLocation(newFrameX, newFrameY);
+		
+		//tile its position
+		newFrameX = (newFrameX + 10) % desktop.getWidth(); 
+		newFrameY = (newFrameY + 10) % desktop.getHeight(); 
+		desktop.add(frame);
+		//show it
+		frame.setVisible(true);
+		
+		//add child to openViews
+		openViews.add(child);
+		
+		return frame;
+	}
 	
 	
+	public void displayChildMessage(String msg) {
+		JOptionPane.showMessageDialog(this, msg);
+	}
 	
-	
+	public void removeFromOpenViews(MDIChild child) {
+		openViews.remove(child);
+	}
 
 }

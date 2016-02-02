@@ -57,6 +57,11 @@ public class WarehouseListController extends AbstractListModel<Warehouse> implem
 	public void update (Observable o, Object arg) {
 		myListView.repaint();
 	}
+
+	@Override
+	public int getSize() {
+		return myList.size();
+	}
 	
 	
 	
