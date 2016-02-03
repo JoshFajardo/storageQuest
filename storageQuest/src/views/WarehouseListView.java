@@ -36,10 +36,10 @@ public class WarehouseListView extends MDIChild{
 	
 	private Warehouse selectedModel;
 	
-	public WarehouseListView(String title, WarehouseListController list, MDIParent m){
+	public WarehouseListView(String title, WarehouseListController list, MDIParent m) {
 		super(title, m);
 		JPanel panel = new JPanel();
-		WarehouseList newList = new WarehouseList();
+		
 		myList = list;
 		
 		
@@ -66,7 +66,7 @@ public class WarehouseListView extends MDIChild{
 			public void actionPerformed(ActionEvent e){
 				int index = listWarehouse.getSelectedIndex();
 				warehouse = myList.getElementAt(index);
-				newList.removeWarehouseFromList(warehouse);
+				//newList.removeWarehouseFromList(warehouse);
 				if(index == myList.getSize())
 					index--;
 				listWarehouse.setSelectedIndex(index);
