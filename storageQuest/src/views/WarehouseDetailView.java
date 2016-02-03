@@ -83,17 +83,6 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 	panel.add(saveButton);
 	this.add(panel, BorderLayout.SOUTH);
 	
-	panel.setLayout(new FlowLayout());
-	JButton deleteButton = new JButton("Delete!");
-	deleteButton.addActionListener(new ActionListener(){
-		@Override
-		public void actionPerformed(ActionEvent e){
-			deleteWarehouse();
-			
-		}
-	});
-	panel.add(deleteButton);
-	this.add(panel,BorderLayout.SOUTH);
 	
 	refreshFields();
 	
@@ -113,12 +102,7 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 		this.setTitle(myWarehouse.getWarehouseName());
 	}
 	
-	public void deleteWarehouse(){
-		parent.doCommand(MenuCommands.DELETE_WAREHOUSE,this);
-		
-		
-		
-	}
+	
 	
 	
 	public void saveWarehouse(){

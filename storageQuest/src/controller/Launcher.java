@@ -23,7 +23,7 @@ public class Launcher {
 				"Pennsylvania",
 				"18504",
 				100));
-		MDIParent appFrame = new MDIParent("Cabentrion Warehouse System",warehouseList);
+		MDIParent appFrame = new MDIParent("Cabinetron Warehouse System",warehouseList);
 		
 		appFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		

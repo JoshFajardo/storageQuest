@@ -89,11 +89,7 @@ public class MDIParent extends JFrame{
 			displayChildMessage("New Warehouse Created!");
 			
 			break;
-		case DELETE_WAREHOUSE:
-			Warehouse dw = ((WarehouseListView)caller).getSelectedWarehouse();
-			warehouseList.removeWarehouseFromList(dw);
-			
-		
+	
 		}
 	}
 	public void closeChildren() {
