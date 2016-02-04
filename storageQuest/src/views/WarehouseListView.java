@@ -16,6 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
@@ -77,14 +78,16 @@ public class WarehouseListView extends MDIChild{
 			public void actionPerformed(ActionEvent e){
 				int index = listWarehouse.getSelectedIndex();
 				warehouse = myList.getElementAt(index);
-
-				listNew.removeWarehouseFromList(warehouse);
-				if(index == myList.getSize())
-					index--;
-				listWarehouse.setSelectedIndex(index);
 				
-				parent.displayChildMessage("Warehouse Deleted!");
-				listWarehouse.updateUI();
+				int test = JOptionPane.showConfirmDialog(parent, "Do you want to delete " + warehouse.getFullName()+"?", "Delete", JOptionPane.YES_NO_OPTION);
+				if(test == JOptionPane.YES_OPTION){
+					listNew.removeWarehouseFromList(warehouse);
+					if(index == myList.getSize())
+						index--;
+					listWarehouse.setSelectedIndex(index);
+				
+					listWarehouse.updateUI();
+				}
 			}
 		});
 		panel.add(deleteButton);

@@ -159,6 +159,8 @@ public class MDIParent extends JFrame{
 		JOptionPane.showMessageDialog(this, msg);
 	}
 	
+	
+	
 	public void removeFromOpenViews(MDIChild child) {
 		openViews.remove(child);
 	}
