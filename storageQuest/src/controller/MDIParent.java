@@ -34,6 +34,7 @@ public class MDIParent extends JFrame{
 	private int newFrameX = 0, newFrameY = 0;
 	
 	private WarehouseList warehouseList;
+	private WarehouseList newList;
 	
 	private List<MDIChild> openViews;
 	
@@ -42,7 +43,7 @@ public class MDIParent extends JFrame{
 		
 		
 		warehouseList = wList;
-		
+		newList = wList;
 		openViews = new LinkedList<MDIChild>();
 		
 		MDIMenu menuBar = new MDIMenu(this);
@@ -68,7 +69,7 @@ public class MDIParent extends JFrame{
 			this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 			break;
 		case SHOW_LIST_WAREHOUSE:
-			WarehouseListView v1 = new WarehouseListView("Warehouse List", new WarehouseListController(warehouseList),this);
+			WarehouseListView v1 = new WarehouseListView("Warehouse List", new WarehouseListController(warehouseList),this,newList);
 			
 			openMDIChild(v1);
 			break;
@@ -77,18 +78,8 @@ public class MDIParent extends JFrame{
 			WarehouseDetailView v = new WarehouseDetailView(w.getFullName(),w,this);
 			openMDIChild(v);
 			break;
-		case ADD_WAREHOUSE:
-			warehouseList.addWarehouseToList(new Warehouse("New_Entry " ,
-					"<add>",
-					"<add>",
-					"<add>",
-					"00000",
-					0));
-			//WarehouseListView v2 = new WarehouseListView("Warehouse List", new WarehouseListController(warehouseList),this);
-			//openMDIChild(v2);
-			displayChildMessage("New Warehouse Created!");
-			
-			break;
+		
+	
 	
 		}
 	}

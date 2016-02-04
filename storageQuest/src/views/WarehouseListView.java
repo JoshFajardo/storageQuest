@@ -34,19 +34,24 @@ public class WarehouseListView extends MDIChild{
 	private WarehouseListController myList;
 	Warehouse warehouse = new Warehouse();
 	
-	private Warehouse selectedModel;
 	
-	public WarehouseListView(String title, WarehouseListController list, MDIParent m) {
+	private Warehouse selectedModel;
+	private WarehouseList listNew;
+	
+	public WarehouseListView(String title, WarehouseListController list, 
+			MDIParent m,WarehouseList warehouselistNew) {
 		super(title, m);
+		list.setMyListView(this);
 		JPanel panel = new JPanel();
 		
+		this.listNew = warehouselistNew;
 		myList = list;
 		
 		
 		listWarehouse = new JList<Warehouse>(myList);
 		//uses the cell renderer instead of the toString
 		listWarehouse.setCellRenderer(new WarehouseListCellRenderer());
-		listWarehouse.setPreferredSize(new Dimension(200,200));
+		listWarehouse.setPreferredSize(new Dimension(200,300));
 		//event handler for a double click of the mouse
 		listWarehouse.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent evt){
@@ -58,7 +63,13 @@ public class WarehouseListView extends MDIChild{
 				}
 			}
 		});
-		panel = new JPanel();
+		
+		
+		this.add(new JScrollPane(listWarehouse));
+		
+		this.setPreferredSize(new Dimension(340,200));
+		
+		//panel = new JPanel();
 		panel.setLayout(new FlowLayout());
 		JButton deleteButton = new JButton("Delete!");
 		deleteButton.addActionListener(new ActionListener(){
@@ -66,21 +77,40 @@ public class WarehouseListView extends MDIChild{
 			public void actionPerformed(ActionEvent e){
 				int index = listWarehouse.getSelectedIndex();
 				warehouse = myList.getElementAt(index);
-				//newList.removeWarehouseFromList(warehouse);
+
+				listNew.removeWarehouseFromList(warehouse);
 				if(index == myList.getSize())
 					index--;
 				listWarehouse.setSelectedIndex(index);
-				parent.displayChildMessage("warehouse deleted");
+				
+				parent.displayChildMessage("Warehouse Deleted!");
 				listWarehouse.updateUI();
 			}
 		});
 		panel.add(deleteButton);
-		this.add(panel,BorderLayout.SOUTH);
+		this.add(panel,BorderLayout.NORTH);
 		
-		this.add(new JScrollPane(listWarehouse));
 		
-		this.setPreferredSize(new Dimension(240,200));
-		
+		panel.setLayout(new FlowLayout());
+		JButton AddButton = new JButton("Add New!");
+		AddButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				int index = myList.getSize();
+				//decrement because index and size can't be the same, throw exception
+				index--;
+				warehouse = myList.getElementAt(index);
+				listNew.addWarehouseToList(new Warehouse("New_Entry " +index ,
+						"<Address>",
+						"<State>",
+						"<City>",
+						"00000",
+						0));
+				listWarehouse.updateUI();
+			}
+		});
+		panel.add(AddButton);
+		this.add(panel,BorderLayout.EAST);
 		
 		
 	}
@@ -91,6 +121,9 @@ public class WarehouseListView extends MDIChild{
 	
 	public Warehouse getSelectedWarehouse(){
 		return selectedModel;
+	}
+	public int getSize(WarehouseList List){
+		return List.getListSize();
 	}
 	
 	protected void childClosing(){

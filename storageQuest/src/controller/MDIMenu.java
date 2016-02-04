@@ -29,16 +29,6 @@ public class MDIMenu extends JMenuBar {
 		
 		
 		menu = new JMenu("Warehouses");
-		menuItem = new JMenuItem("Add a Warehouse");
-		menuItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				parent.doCommand(MenuCommands.ADD_WAREHOUSE, null);
-			}
-		});
-		menu.add(menuItem);
-		this.add(menu);
-		
 		menuItem = new JMenuItem("Show Warehouse List");
 		menuItem.addActionListener(new ActionListener() {
 			@Override
