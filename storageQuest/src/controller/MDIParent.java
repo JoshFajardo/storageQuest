@@ -159,7 +159,14 @@ public class MDIParent extends JFrame{
 		JOptionPane.showMessageDialog(this, msg);
 	}
 	
-	
+	public int confirmationMessage(Object msg,String title,int option){
+		int response =JOptionPane.showConfirmDialog(this, msg, title, option);
+		if(response == 1){
+			return 1;
+		}
+		return 0;
+		
+	}
 	
 	public void removeFromOpenViews(MDIChild child) {
 		openViews.remove(child);

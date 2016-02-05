@@ -77,6 +77,10 @@ public class WarehouseListView extends MDIChild{
 			@Override
 			public void actionPerformed(ActionEvent e){
 				int index = listWarehouse.getSelectedIndex();
+				if(index < 0){
+					parent.displayChildMessage("No warehouse selected!");
+					return;
+				}
 				warehouse = myList.getElementAt(index);
 				
 				int test = JOptionPane.showConfirmDialog(parent, "Do you want to delete " + warehouse.getFullName()+"?", "Delete", JOptionPane.YES_NO_OPTION);
@@ -125,10 +129,11 @@ public class WarehouseListView extends MDIChild{
 	public Warehouse getSelectedWarehouse(){
 		return selectedModel;
 	}
+	/*
 	public int getSize(WarehouseList List){
 		return List.getListSize();
 	}
-	
+	*/
 	protected void childClosing(){
 		
 		super.childClosing();

@@ -27,8 +27,9 @@ public class WarehouseList {
 	public void setList(List<Warehouse> myList){
 		this.myList = myList;
 	}
+	/*
 	public int getListSize(){
 		return myList.size();
 	}
-	
+	*/
 }
