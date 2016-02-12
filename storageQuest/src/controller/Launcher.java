@@ -23,6 +23,12 @@ public class Launcher {
 				"Pennsylvania",
 				"18504",
 				100));
+		warehouseList.addWarehouseToList(new Warehouse("Spaghetti Warehouse",
+				"123 Tomato St.",
+				"Las Vegas",
+				"Navada",
+				"45363",
+				10000));
 		MDIParent appFrame = new MDIParent("Cabinetron Warehouse System",warehouseList);
 		
 		appFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

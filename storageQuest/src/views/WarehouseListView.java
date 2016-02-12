@@ -76,7 +76,7 @@ public class WarehouseListView extends MDIChild{
 		deleteButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
-				int index = listWarehouse.getSelectedIndex();
+				/*int index = listWarehouse.getSelectedIndex();
 				if(index < 0){
 					parent.displayChildMessage("No warehouse selected!");
 					return;
@@ -91,6 +91,23 @@ public class WarehouseListView extends MDIChild{
 					listWarehouse.setSelectedIndex(index);
 				
 					listWarehouse.updateUI();
+				}*/
+				try{
+					int index = listWarehouse.getSelectedIndex();
+					warehouse = myList.getElementAt(index);
+					
+					int test = JOptionPane.showConfirmDialog(parent, "Do you want to delete " + warehouse.getFullName()+"?", "Delete", JOptionPane.YES_NO_OPTION);
+					if(test == JOptionPane.YES_OPTION){
+						listNew.removeWarehouseFromList(warehouse);
+						if(index == myList.getSize())
+							index--;
+						listWarehouse.setSelectedIndex(index);
+					
+						listWarehouse.updateUI();
+					}
+				}catch(Exception ex){
+					parent.displayChildMessage("No warehouse selected!");
+					return;
 				}
 			}
 		});
