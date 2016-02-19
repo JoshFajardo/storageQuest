@@ -1,11 +1,19 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
+import java.util.Observer;
+import java.util.UUID;
 
-public class Warehouse extends Observable{
+import database.GatewayException;
+import database.WarehouseTableGateway;
+
+public class Warehouse extends Observable {
 
 	//initialized at one
-	private static long nextId = 1;
+	//private static long nextId = 1;
+	public static final int INVALID_ID = 0;
 	
 	// id for the ware houses
 	private long id;
@@ -23,14 +31,20 @@ public class Warehouse extends Observable{
 	// max number of units that can be stored at the warehouse
 	private int storageCapacity;
 	
+	private WarehouseTableGateway gateway;
+	
+	private List<WarehousePart> parts;
+	
 	public Warehouse(){
-		id = nextId++;
+		//id = nextId++;
+		id = INVALID_ID;
 		warehouseName = "";
 		address = "";
 		city = "";
 		state = "";
 		zip = "";
 		storageCapacity = 0;
+		parts = new ArrayList<WarehousePart>();
 	}
 	
 	public Warehouse (String wn, String ad, String ct, String st, String zip){
