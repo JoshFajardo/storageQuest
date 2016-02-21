@@ -9,10 +9,18 @@ import java.util.UUID;
 import database.GatewayException;
 import database.WarehouseTableGateway;
 
-public class Warehouse extends Observable {
+public class Warehouse extends Observable implements Observer{
 
 	//initialized at one
 	//private static long nextId = 1;
+	public static final String ERRORMSG_INVALID_ID = "Invalid id!";
+	public static final String ERRORMSG_INVALID_WAREHOUSENAME = "Invalid Warehouse Name!";
+	public static final String ERRORMSG_INVALID_ADDRESS = "Invalid address!";
+	public static final String ERRORMSG_INVALID_CITY = "Invalid city!";
+	public static final String ERRORMSG_INVALID_STATE = "Invalid state!";
+	public static final String ERRORMSG_INVALID_ZIP = "Invalid zip!";
+	public static final String ERRORMSG_INVALID_STORAGECAP = "Invalid storage capacity!";
+	
 	public static final int INVALID_ID = 0;
 	
 	// id for the ware houses
@@ -33,7 +41,7 @@ public class Warehouse extends Observable {
 	
 	private WarehouseTableGateway gateway;
 	
-	private List<WarehousePart> parts;
+	private List<WarehousePart> myParts;
 	
 	public Warehouse(){
 		//id = nextId++;
@@ -44,21 +52,21 @@ public class Warehouse extends Observable {
 		state = "";
 		zip = "";
 		storageCapacity = 0;
-		parts = new ArrayList<WarehousePart>();
+		myParts = new ArrayList<WarehousePart>();
 	}
 	
 	public Warehouse (String wn, String ad, String ct, String st, String zip){
 		this ();
 		if(!validWarehouseName(wn))
-			throw new IllegalArgumentException("Invalid warehouse name!");
+			throw new IllegalArgumentException(ERRORMSG_INVALID_WAREHOUSENAME);
 		if(!validAddress(ad))
-			throw new IllegalArgumentException("Invalid address!");
+			throw new IllegalArgumentException(ERRORMSG_INVALID_ADDRESS);
 		if(!validCity(ct))
-			throw new IllegalArgumentException("Invalid city!");
+			throw new IllegalArgumentException(ERRORMSG_INVALID_CITY);
 		if(!validState(st))
-			throw new IllegalArgumentException("Invalid State!");
+			throw new IllegalArgumentException(ERRORMSG_INVALID_STATE);
 		if(!validZip(zip))
-			throw new IllegalArgumentException("Invalid Zip!");
+			throw new IllegalArgumentException(ERRORMSG_INVALID_ZIP);
 		
 		warehouseName = wn;
 		address = ad;
@@ -73,8 +81,19 @@ public class Warehouse extends Observable {
 		this.storageCapacity = sc;
 	}
 	
+	public Warehouse(long id, String wn, String ad, String ct, String st, String zip, int sc){
+		this(wn,ad,ct,st,zip,sc);
+		if(id<1)
+			throw new IllegalArgumentException(ERRORMSG_INVALID_ID);
+		setId(id);
+	}
+	
 	public long getId(){
 		return id;
+	}
+	
+	public void setId(long id){
+		this.id = id;
 	}
 	
 	public String getWarehouseName(){
@@ -201,9 +220,64 @@ public class Warehouse extends Observable {
 			ret = "unknown";
 		return ret;
 	}
+	
+	public boolean warehouseAlreadyExists(long id, String wn){
+		
+		try{
+			return gateway.warehouseAlreadyExists(id, wn);
+		}catch (GatewayException e){
+			return true;
+		}
+	}
+	
+	
 
-	public void finishUpdate() {
-		notifyObservers();
+	public void finishUpdate() throws GatewayException{
+		Warehouse orig = null;
+		//checking if the warehouse is already in the database
+		if(this.getId() == 0){
+			if(gateway.warehouseAlreadyExists(0, this.getWarehouseName()))
+				throw new GatewayException(this.getWarehouseName() + "  is already in the database");
+			
+		}
+		try{
+			//if the id is 0, then this is a new warehouse,else it updates
+			if(this.getId() == 0){
+				this.setId(gateway.insertWarehouse(this));
+			}
+			else{
+				// gets the warehouse in case it fails
+				orig = gateway.fetchWarehouse(this.getId());
+				
+				gateway.saveWarehouse(this);
+			}
+			notifyObservers();
+			
+		}catch(GatewayException e){
+			//if it fails, then it tries to re fetch the model fields
+			if(orig !=null){
+				this.setWarehouseName(orig.getWarehouseName());
+				this.setAddress(orig.getAddress());
+				this.setCity(orig.getCity());
+				this.setState(orig.getState());
+				this.setZip(orig.getZip());
+				this.setStorageCapacity(orig.getStorageCapacity());
+			}
+			throw new GatewayException("Error trying to save the warehouse object");
+			
+		}			
+		
+	}
+	
+	public void delete() throws GatewayException {
+		//if id is 0 then nothing has to be done in the gateway
+		if(this.getId() == 0)
+			return;
+		try{
+			gateway.deleteWarehouse(this.getId());
+		}catch(GatewayException e){
+			throw new GatewayException(e.getMessage());
+		}
 	}
 	
 	
@@ -223,11 +297,99 @@ public class Warehouse extends Observable {
 		
 	}
 
+	public WarehouseTableGateway getGateway(){
+		return gateway;
+	}
 	
+	public void setGateway(WarehouseTableGateway gateway){
+		this.gateway = gateway;
+	}
+	
+	public List<WarehousePart> getMyParts(){
+		return myParts;
+	}
+	
+	public void fetchMyParts(WarehouseList wList, PartList pList){
+		try{
+			
+			List<WarehousePart> parts = gateway.fetchWarehouseParts(this, pList);
+			
+			for(WarehousePart wp : parts){
+				if(!partExistsInMyList(wp.getPart())){
+					
+					wp.addObserver(this);
+					
+					wp.getPart().addObserver(wp);
+					myParts.add(wp);
+				}
+				
+			}
+		}catch (GatewayException e){
+			e.printStackTrace();
+		}
+	}
+	//this just checks for the part, so it can be used in fetchMyParts()
+	public boolean partExistsInMyList(Part p){
+		for(WarehousePart wp: myParts){
+			if(wp.getPart() == p)
+				return true;
+		}
+		return false;
+	}
+	
+	public void updateMyPart(WarehousePart wp) throws GatewayException {
+		gateway.saveWarehousePart(wp);
+	}
+	
+	
+	public boolean addPart(Part p){
+		
+		if(partExistsInMyList(p))
+			return false;
+		WarehousePart wp = new WarehousePart(this, p);
+		wp.addObserver(this);
+		
+		p.addObserver(wp);
+		
+		try{
+			gateway.insertWarehousePart(wp);
+		}catch(GatewayException e){
+			e.printStackTrace();
+			return false;
+		}
+		//adds to the list
+		myParts.add(wp);
+		
+		this.setChanged();
+		this.notifyObservers();
+		return true;
+	}
+	
+	public void deletePart(WarehousePart wp){
+		try{
+			gateway.deleteWarehousePart(wp);
+		}catch (GatewayException e){
+			e.printStackTrace();
+			return;
+		}
+		
+		wp.deleteObserver(wp);
+		wp.getPart().deleteObserver(wp);
+		
+		myParts.remove(wp);
+		
+		this.setChanged();
+		this.notifyObservers();
+	}
+	
+	@Override
+	public void update(Observable o, Object arg){
+		
+		if(o instanceof WarehousePart){
+			this.setChanged();
+			this.notifyObservers();
+		}
+	}
 
-	
-
-	
-	
 	
 }

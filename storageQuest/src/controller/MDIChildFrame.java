@@ -26,13 +26,14 @@ public class MDIChildFrame extends JInternalFrame implements InternalFrameListen
 	public void internalFrameOpened(InternalFrameEvent e){
 		
 	}
-	public void closeChild(){
-		myChild.childClosing();
+	public void cleanup(){
+		myChild.cleanup();
 	}
 	@Override
 	public void internalFrameClosing(InternalFrameEvent e) {
 		// tell child to clean up (e.g., remove from MDIParent's openViews list
-		closeChild();
+		cleanup();
+		//need to add if ok to close method
 	}
 
 	@Override

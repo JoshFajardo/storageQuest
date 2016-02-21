@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 public class MDIChild extends JPanel {
 
 	
-	private Container myFrame;
+	protected Container myFrame;
 	
 	
 	protected MDIParent parent;
@@ -17,6 +17,8 @@ public class MDIChild extends JPanel {
 	private String myTitle;
 	
 	private boolean singleOpenOnly;
+	
+	private boolean changed;
 	
 	public MDIChild(String title, MDIParent parent){
 		this(title);
@@ -75,18 +77,53 @@ public class MDIChild extends JPanel {
 			((JInternalFrame)myFrame).setTitle(t);
 	}
 	
-	protected void setInternalFrameVisiable(boolean v){
+	protected void setInternalFrameVisible(boolean v){
 		if(myFrame == null)
 			myFrame = getMDIChildFrame();
 		if(myFrame != null)
 			((JInternalFrame) myFrame).setVisible(v);
 	}
 	
+	protected void cleanup(){
+		parent.removeFromOpenViews(this);
+		System.err.println("MDI child is closing");
+	}
+	
+	public Container getMyFrame(){
+		return myFrame;
+	}
+	
+	public void setMyFrame(Container myFrame){
+		this.myFrame = myFrame;
+	}
+	
+	public void closeFrame(){
+		try{
+			((JInternalFrame) myFrame).setClosed(true);
+		}catch (PropertyVetoException e){
+			parent.displayChildMessage("Error trying to close child");
+			
+		}
+	}
+	
+	
+	public boolean isChanged(){
+		return changed;
+	}
+	
+	public void setChanged(boolean changed){
+		this.changed = changed;
+	}
+	
+	public boolean saveModel(){
+		return true;
+	}
+	/*
 	protected void childClosing(){
 		parent.removeFromOpenViews(this);
 		
 		
 		System.err.println("MDIChild closed");
-	}
+	}*/
 	
 }

@@ -22,28 +22,41 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import database.GatewayException;
 import models.Warehouse;
 import models.WarehouseList;
+import models.Part;
+import models.PartList;
+import models.WarehousePart;
+
+import views.PartDetailView;
+import views.PartListView;
 import views.WarehouseDetailView;
 import views.WarehouseListView;
 
 
 public class MDIParent extends JFrame{
+	
 	private static final long serialVersionUID = 1L;
 	private JDesktopPane desktop;
 	private int newFrameX = 0, newFrameY = 0;
 	
 	private WarehouseList warehouseList;
 	private WarehouseList newList;
+	private PartList partList;
+	
 	
 	private List<MDIChild> openViews;
 	
-	public MDIParent (String title, WarehouseList wList){
+	public MDIParent (String title, WarehouseList wList, PartList pList){
 		super(title);
 		
 		
 		warehouseList = wList;
 		newList = wList;
+		partList = pList;
+		
+		
 		openViews = new LinkedList<MDIChild>();
 		
 		MDIMenu menuBar = new MDIMenu(this);
@@ -51,6 +64,8 @@ public class MDIParent extends JFrame{
 		
 		desktop = new JDesktopPane();
 		add(desktop);
+		
+		//this.addWindowListener(this);
 		
 		Runtime.getRuntime().addShutdownHook(new Thread(){
 			@Override
@@ -69,16 +84,37 @@ public class MDIParent extends JFrame{
 			this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 			break;
 		case SHOW_LIST_WAREHOUSE:
+			
+			warehouseList.loadFromGateway();
 			WarehouseListView v1 = new WarehouseListView("Warehouse List", new WarehouseListController(warehouseList),this,newList);
 			
 			openMDIChild(v1);
 			break;
 		case SHOW_DETAIL_WAREHOUSE :
 			Warehouse w = ((WarehouseListView) caller).getSelectedWarehouse();
+			w.fetchMyParts(warehouseList, partList);
+			
 			WarehouseDetailView v = new WarehouseDetailView(w.getFullName(),w,this);
 			openMDIChild(v);
 			break;
 		
+			
+		case SHOW_LIST_PARTS :
+			partList.loadFromGateway();
+			
+			PartListView pv1 = new PartListView("Part List", new PartListController(partList),this);
+			openMDIChild(pv1);
+			break;
+			
+		case SHOW_DETAIL_PART:
+			Part p = ((PartListView)caller).getSelectedPart();
+			PartDetailView PartView = new PartDetailView(p.getPartName(),p,this);
+			openMDIChild(PartView);
+			break;
+		case DELETE_PART:
+			break;
+		default:
+			break;
 	
 	
 		}
@@ -98,8 +134,11 @@ public class MDIParent extends JFrame{
 	public void cleanupChildPanels() {
 		JInternalFrame [] children = desktop.getAllFrames();
 		for(int i = children.length - 1; i >= 0; i--) {
-			if(children[i] instanceof MDIChildFrame)
-				((MDIChildFrame) children[i]).closeChild();
+			if(children[i] instanceof MDIChildFrame){
+				MDIChildFrame cf = (MDIChildFrame) children[i];
+				cf.cleanup();
+			}
+				
 		}
 	}
 	
@@ -171,5 +210,7 @@ public class MDIParent extends JFrame{
 	public void removeFromOpenViews(MDIChild child) {
 		openViews.remove(child);
 	}
+	
+
 
 }
