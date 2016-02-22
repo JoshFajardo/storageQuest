@@ -39,9 +39,20 @@ public class MDIMenu extends JMenuBar {
 		menu.add(menuItem);
 		this.add(menu);		
 		
-		
-		
 		menu.add(menuItem);
+
+		menuItem = new JMenuItem("Add Warehouse");
+		menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				parent.doCommand(MenuCommands.ADD_WAREHOUSE, null);
+			}
+		});
+		menu.add(menuItem);
+		this.add(menu);	
+		
+		
+		menu = new JMenu("Parts");
 		menuItem = new JMenuItem("Part List");
 		menuItem.addActionListener(new ActionListener (){
 			@Override
@@ -50,6 +61,6 @@ public class MDIMenu extends JMenuBar {
 			}
 		});
 		menu.add(menuItem);
-		
+		this.add(menu);
 	}
 }

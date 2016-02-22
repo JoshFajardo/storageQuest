@@ -111,6 +111,17 @@ public class MDIParent extends JFrame{
 			PartDetailView PartView = new PartDetailView(p.getPartName(),p,this);
 			openMDIChild(PartView);
 			break;
+			
+		case ADD_WAREHOUSE:
+			Warehouse wAdd = new Warehouse("<name>", "<address>","<city>","<state>","<zip>", 0);
+			
+			warehouseList.addWarehouseToList(wAdd);
+			warehouseList.addToNewRecords(wAdd);
+			
+			WarehouseDetailView vAdd = new WarehouseDetailView(wAdd.getFullName(), wAdd, this);
+			openMDIChild(vAdd);
+			break;
+			
 		case DELETE_PART:
 			break;
 		default:

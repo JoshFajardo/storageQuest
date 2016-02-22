@@ -85,7 +85,7 @@ public class WarehouseTableGatewayMySQL implements WarehouseTableGateway{
 		ResultSet rs = null;
 		try{
 			st = conn.prepareStatement("select count(id) as num_records "
-					+ " from person where warehouse_name = ? and id <> ? ");
+					+ " from warehouse where warehouse_name = ? and id <> ? ");
 			st.setString(1, wn);
 			st.setLong(2, id);
 			rs = st.executeQuery();

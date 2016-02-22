@@ -101,7 +101,7 @@ public class WarehouseListView extends MDIChild{
 		panel.add(deleteButton);
 		this.add(panel,BorderLayout.NORTH);
 		
-		
+		/*
 		panel.setLayout(new FlowLayout());
 		JButton AddButton = new JButton("Add New!");
 		AddButton.addActionListener(new ActionListener(){
@@ -122,7 +122,7 @@ public class WarehouseListView extends MDIChild{
 		});
 		panel.add(AddButton);
 		this.add(panel,BorderLayout.EAST);
-		
+		*/
 		
 	}
 	
