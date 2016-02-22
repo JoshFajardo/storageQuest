@@ -4,22 +4,41 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.AbstractListModel;
+import javax.swing.DefaultListModel;
+import javax.swing.DropMode;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.TransferHandler;
+import javax.swing.TransferHandler.TransferSupport;
 
 import controller.MDIChild;
 import controller.MDIParent;
 import controller.MenuCommands;
+import database.GatewayException;
 import models.Warehouse;
 import models.WarehouseList;
+import models.WarehousePart;
 
 public class WarehouseDetailView extends MDIChild implements Observer{
 
@@ -28,6 +47,11 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 	private JLabel fldId;
 	private JTextField fldWarehouseName, fldAddress, fldCity, fldState, fldZip;
 	private JTextField fldStorageCap;
+	
+	private JList<WarehousePart> listMyParts;
+	private WarehousePartListModel lmMyParts;
+	
+	private WarehousePart selectedModel;
 	
 	
 	public WarehouseDetailView(String title, Warehouse warehouse, MDIParent m){
@@ -77,7 +101,7 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 	saveButton.addActionListener(new ActionListener(){
 		@Override
 		public void actionPerformed(ActionEvent e){
-			saveWarehouse();
+			saveModel();
 		}
 	});
 	panel.add(saveButton);
@@ -88,6 +112,16 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 	
 	this.setPreferredSize(new Dimension(360, 210));
 	
+	}
+	/*
+	 * @TODO
+	 */
+	public void openWarehousePartDetailView(){
+		//parent.doCommand(MenuCommands.SHOW_DETAIL_WAREHOUSE_PART, this);
+	}
+	
+	public WarehousePart getSelectedWarehousePart(){
+		return selectedModel;
 	}
 	
 	public void refreshFields() {
@@ -100,41 +134,43 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 		fldStorageCap.setText(myWarehouse.getStorageCapacity().toString());
 		
 		this.setTitle(myWarehouse.getWarehouseName());
+		
+		setChanged(false);
 	}
 	
 	
 	
-	
-	public void saveWarehouse(){
+	@Override
+	public boolean saveModel(){
 		String testWN = fldWarehouseName.getText().trim();
 		if(!myWarehouse.validWarehouseName(testWN)){
 			parent.displayChildMessage("Invalid Warehouse Name");
 			refreshFields();
-			return;
+			return false;
 		}
 		String testAD = fldAddress.getText().trim();
 		if(!myWarehouse.validAddress(testAD)){
 			parent.displayChildMessage("Invalid Address");
 			refreshFields();
-			return;
+			return false;
 		}
 		String testCT = fldCity.getText().trim();
 		if(!myWarehouse.validCity(testCT)){
 			parent.displayChildMessage("Invalid City");
 			refreshFields();
-			return;
+			return false;
 		}
 		String testST = fldState.getText().trim();
 		if(!myWarehouse.validState(testST)){
 			parent.displayChildMessage("Invalid State");
 			refreshFields();
-			return;
+			return false;
 		}
 		String testZip = fldZip.getText().trim();
 		if(!myWarehouse.validZip(testZip)){
 			parent.displayChildMessage("Invalid Zip");
 			refreshFields();
-			return;
+			return false;
 		}
 		int testStorageCap = 0;
 		try {
@@ -142,12 +178,12 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 		} catch(Exception e) {
 			parent.displayChildMessage("Invalid Storage Capacity");
 			refreshFields();
-			return;
+			return false;
 		}
 		if(!myWarehouse.validStorageCapacity(testStorageCap)) {
 			parent.displayChildMessage("Invalid Storage capacity");
 			refreshFields();
-			return;
+			return false;
 		}
 		
 		//fields are valid at this point
@@ -162,22 +198,59 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 		}catch(Exception e){
 			parent.displayChildMessage(e.getMessage());
 			refreshFields();
-			return;
+			return false;
 		}
-		
+		try{
 		myWarehouse.finishUpdate();
 		parent.displayChildMessage("Changes Saved");
+		}catch(GatewayException e){
+			refreshFields();
+			parent.displayChildMessage(e.getMessage());
+			return false;
 		}
+		parent.displayChildMessage("changes saved");
+		return true;
+	}
 	@Override
-	protected void childClosing(){
-		super.childClosing();
+	protected void cleanup(){
+		super.cleanup();
 		
 		myWarehouse.deleteObserver(this);
 	}
 	@Override
 	public void update(Observable o, Object arg){
 			refreshFields();
+			
+			lmMyParts.refreshContents();
 	}
+	
+	public Warehouse getMyWarehouse(){
+		return myWarehouse;
+	}
+	
+	public void setMyWarehouse(Warehouse myWarehouse){
+		this.myWarehouse = myWarehouse;
+	}
+	
+	private class WarehousePartListModel extends AbstractListModel<WarehousePart>{
+		
+		@Override
+		public int getSize(){
+			return myWarehouse.getMyParts().size();
+		}
+		
+		@Override
+		public WarehousePart getElementAt(int index){
+			return myWarehouse.getMyParts().get(index);
+		}
+		
+		public void refreshContents(){
+			this.fireContentsChanged(this, 0, this.getSize());
+		}
+		
+	}
+	
+	
 	
 }
 	

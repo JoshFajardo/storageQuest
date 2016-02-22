@@ -42,7 +42,9 @@ public class WarehouseListView extends MDIChild{
 	public WarehouseListView(String title, WarehouseListController list, 
 			MDIParent m,WarehouseList warehouselistNew) {
 		super(title, m);
+		
 		list.setMyListView(this);
+		
 		JPanel panel = new JPanel();
 		
 		this.listNew = warehouselistNew;
@@ -76,22 +78,7 @@ public class WarehouseListView extends MDIChild{
 		deleteButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
-				/*int index = listWarehouse.getSelectedIndex();
-				if(index < 0){
-					parent.displayChildMessage("No warehouse selected!");
-					return;
-				}
-				warehouse = myList.getElementAt(index);
 				
-				int test = JOptionPane.showConfirmDialog(parent, "Do you want to delete " + warehouse.getFullName()+"?", "Delete", JOptionPane.YES_NO_OPTION);
-				if(test == JOptionPane.YES_OPTION){
-					listNew.removeWarehouseFromList(warehouse);
-					if(index == myList.getSize())
-						index--;
-					listWarehouse.setSelectedIndex(index);
-				
-					listWarehouse.updateUI();
-				}*/
 				try{
 					int index = listWarehouse.getSelectedIndex();
 					warehouse = myList.getElementAt(index);
@@ -151,11 +138,35 @@ public class WarehouseListView extends MDIChild{
 		return List.getListSize();
 	}
 	*/
-	protected void childClosing(){
+	protected void cleanup(){
 		
-		super.childClosing();
+		super.cleanup();
 		
 		myList.unregisterAsObserver();
+	}
+	
+	public WarehouseListController getMyList(){
+		return myList;
+	}
+	
+	public void setMyList(WarehouseListController myList){
+		this.myList = myList;
+	}
+	
+	public JList<Warehouse> getListPeople(){
+		return listWarehouse;
+	}
+	
+	public void setListWarehouse(JList<Warehouse> listWarehouse){
+		this.listWarehouse = listWarehouse;
+	}
+	
+	public Warehouse getSelectedModel(){
+		return selectedModel;
+	}
+	
+	public void setSelectedModel(Warehouse selectedModel){
+		this.selectedModel = selectedModel;
 	}
 			
 }
