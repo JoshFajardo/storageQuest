@@ -131,7 +131,7 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 		fldCity.setText(myWarehouse.getCity());
 		fldState.setText(myWarehouse.getState());
 		fldZip.setText(myWarehouse.getZip());
-		fldStorageCap.setText(myWarehouse.getStorageCapacity().toString());
+		fldStorageCap.setText("" + myWarehouse.getStorageCapacity());
 		
 		this.setTitle(myWarehouse.getWarehouseName());
 		
@@ -202,13 +202,13 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 		}
 		try{
 		myWarehouse.finishUpdate();
-		parent.displayChildMessage("Changes Saved");
+		//parent.displayChildMessage("Changes Saved");
 		}catch(GatewayException e){
 			refreshFields();
 			parent.displayChildMessage(e.getMessage());
 			return false;
 		}
-		parent.displayChildMessage("changes saved");
+		parent.displayChildMessage("Changes saved");
 		return true;
 	}
 	@Override
@@ -221,7 +221,7 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 	public void update(Observable o, Object arg){
 			refreshFields();
 			
-			lmMyParts.refreshContents();
+			//lmMyParts.refreshContents();
 	}
 	
 	public Warehouse getMyWarehouse(){

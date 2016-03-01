@@ -155,8 +155,8 @@ public class WarehouseTableGatewayMySQL implements WarehouseTableGateway{
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		try{
-			st = conn.prepareStatement("insert warehouse (warehouse_name,address,city,state,zip,storageCapacity)"
-					+ " values (?,?,?,?,?,? ) ", PreparedStatement.RETURN_GENERATED_KEYS);
+			st = conn.prepareStatement("insert warehouse (warehouse_name, address, city, state, zip, StorageCap)"
+					+ " values ( ?, ?, ?, ?, ?, ? ) ", PreparedStatement.RETURN_GENERATED_KEYS);
 			st.setString(1, w.getWarehouseName());
 			st.setString(2, w.getAddress());
 			st.setString(3, w.getCity());
@@ -172,7 +172,7 @@ public class WarehouseTableGatewayMySQL implements WarehouseTableGateway{
 				throw new GatewayException("Could not fetch new record Id");
 			}
 		 	
-		}catch (SQLException e){
+		}catch (SQLException | NullPointerException e){
 			throw new GatewayException(e.getMessage());
 		}finally{
 			
@@ -195,9 +195,10 @@ public class WarehouseTableGatewayMySQL implements WarehouseTableGateway{
 			st.setString(1, w.getWarehouseName());
 			st.setString(2, w.getAddress());
 			st.setString(3, w.getCity());
-			st.setString(4, w.getZip());
-			st.setInt(5, w.getStorageCapacity());
-			st.setLong(6, w.getId());	
+			st.setString(4, w.getState());
+			st.setString(5, w.getZip());
+			st.setInt(6, w.getStorageCapacity());
+			st.setLong(7, w.getId());	
 			st.executeUpdate();
 		} catch (SQLException e) {
 			throw new GatewayException(e.getMessage());
