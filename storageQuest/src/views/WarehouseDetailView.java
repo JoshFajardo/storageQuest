@@ -207,7 +207,6 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 		}catch(GatewayException e){
 			refreshFields();
 			parent.displayChildMessage(e.getMessage());
-			System.out.println("line 210");
 			return false;
 		}
 		parent.displayChildMessage("Changes saved");

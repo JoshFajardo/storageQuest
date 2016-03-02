@@ -190,7 +190,7 @@ public class WarehouseTableGatewayMySQL implements WarehouseTableGateway{
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement("update warehouse "
-					+ " set warehouse_name = ?, address = ?, city = ?, state = ?, zip = ?, storageCapacity = ?"
+					+ " set warehouse_name = ?, address = ?, city = ?, state = ?, zip = ?, StorageCap = ?"
 					+ " where id = ? ");
 			st.setString(1, w.getWarehouseName());
 			st.setString(2, w.getAddress());
