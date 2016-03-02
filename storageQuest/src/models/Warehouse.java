@@ -246,7 +246,7 @@ public class Warehouse extends Observable implements Observer{
 				this.setId(gateway.insertWarehouse(this));
 			}
 			else{
-				// gets the warehouse in case it fails
+				// this is for an update
 				orig = gateway.fetchWarehouse(this.getId());
 				
 				gateway.saveWarehouse(this);

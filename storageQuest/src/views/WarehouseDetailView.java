@@ -197,6 +197,7 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 			myWarehouse.setStorageCapacity(testStorageCap);
 		}catch(Exception e){
 			parent.displayChildMessage(e.getMessage());
+			System.out.println("line 200");
 			refreshFields();
 			return false;
 		}
@@ -206,6 +207,7 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 		}catch(GatewayException e){
 			refreshFields();
 			parent.displayChildMessage(e.getMessage());
+			System.out.println("line 210");
 			return false;
 		}
 		parent.displayChildMessage("Changes saved");
