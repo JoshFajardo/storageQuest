@@ -84,8 +84,8 @@ public class PartTableGatewayMySQL implements PartTableGateway {
 			//should only be 1
 			rs.next();
 			p = new Part(rs.getLong("id"), rs.getString("part_name"), rs.getString("part_number")
-					, rs.getString("vendor"), rs.getString("unit_quanitity")
-					, rs.getString("vendor_part_num"));
+					, rs.getString("vendor"), rs.getString("vendor_part_num")
+					, rs.getString("unit_quanitity"));
 		} catch (SQLException e) {
 			throw new GatewayException(e.getMessage());
 		} finally {
@@ -108,13 +108,16 @@ public class PartTableGatewayMySQL implements PartTableGateway {
 		try {
 			
 			conn.setAutoCommit(false);
+		
 			
-			st = conn.prepareStatement("delete from warehouse_part where part_id = ? ");
-			st.setLong(1, id);
-			st.executeUpdate();
+			//MAKE SURE TO INCLUDE THIS
+			
+			//st = conn.prepareStatement("delete from warehouse_part where part_id = ? ");
+			//st.setLong(1, id);
+			//st.executeUpdate();
 			
 			//part
-			st.close();
+			//st.close();
 			
 			st = conn.prepareStatement("delete from part where id = ? ");
 			st.setLong(1, id);
@@ -158,6 +161,7 @@ public class PartTableGatewayMySQL implements PartTableGateway {
 			st.setString(3, p.getVendor());
 			st.setString(4, p.getVendorPartNumber());
 			st.setString(5, p.getUnitQuanitity());
+			
 			st.executeUpdate();
 			//get the generated key
 			rs = st.getGeneratedKeys();

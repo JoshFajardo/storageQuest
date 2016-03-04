@@ -108,8 +108,8 @@ public class Part extends Observable {
 		return true;
 	}
 	public boolean validUnitQuanitity(String uq){
-		if(!uq.equals("Linear Ft.")|| !uq.equals("Pieces"))
-			return false;
+		//if(!uq.equals("Linear Ft.")|| !uq.equals("Pieces"))
+			//return false;
 		return true;
 	}
 	

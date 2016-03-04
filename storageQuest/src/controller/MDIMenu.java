@@ -61,6 +61,16 @@ public class MDIMenu extends JMenuBar {
 			}
 		});
 		menu.add(menuItem);
+		
+		menuItem = new JMenuItem("Add Part");
+		menuItem.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				parent.doCommand(MenuCommands.ADD_PART, null);
+			}
+		});
+		
+		menu.add(menuItem);
 		this.add(menu);
 	}
 }

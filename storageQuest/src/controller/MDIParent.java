@@ -142,13 +142,45 @@ public class MDIParent extends JFrame{
 				System.err.println(e.getMessage());
 				this.displayChildMessage("Error: Could not delete Warehouse!");
 			}
-			
-			
 			break;
 		
-	
-	
+		case ADD_PART:
+			
+			Part pAdd = new Part();
+			
+			partList.addPartToList(pAdd);
+			partList.addToNewRecords(pAdd);
+			
+			PartDetailView vPartAdd = new PartDetailView(pAdd.getPartName(), pAdd, this);
+			openMDIChild(vPartAdd);
+			break;
+			
+		case DELETE_PART:
+			//first remove part, from the list
+			Part pDelete = ((PartListView)caller).getSelectedPart();
+			partList.removePartFromList(pDelete);
+			
+			//closes all details that are based on this object
+			for(int i = openViews.size() - 1; i >= 0; i--){
+				MDIChild c = openViews.get(i);
+				if(c instanceof PartDetailView){
+					if(((PartDetailView) c).getMyPart().getId() == pDelete.getId())
+						c.closeFrame();
+				}
+			}
+			try{
+				pDelete.delete();
+				this.displayChildMessage("Part Deleted!");
+			}catch(GatewayException e){
+				System.err.println(e.getMessage());
+				this.displayChildMessage("Error, could not delete part!");
+			}
+			break;
+			
+			
 		}
+	
+		
 	}
 	public void closeChildren() {
 		JInternalFrame [] children = desktop.getAllFrames();

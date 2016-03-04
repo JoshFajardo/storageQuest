@@ -51,7 +51,7 @@ public class PartDetailView extends MDIChild implements Observer {
 		fldId = new JLabel("");
 		panel.add(fldId);
 		
-		panel.add(new JLabel("Part name"));
+		panel.add(new JLabel("Part Name"));
 		fldPartName = new JTextField("");
 		fldPartName.addKeyListener(new TextfieldChangeListener());
 		panel.add(fldPartName);
@@ -65,16 +65,18 @@ public class PartDetailView extends MDIChild implements Observer {
 		fldVendor = new JTextField("");
 		fldVendor.addKeyListener(new TextfieldChangeListener());
 		panel.add(fldVendor);
-
+		
+		
 		panel.add(new JLabel("Vendor Part Number"));
 		fldVendorPartNum = new JTextField("");
 		fldVendorPartNum.addKeyListener(new TextfieldChangeListener());
 		panel.add(fldVendorPartNum);
-
+		
 		panel.add(new JLabel("Unit of Quanitity"));
 		fldUnitQuanitity = new JTextField("");
 		fldUnitQuanitity.addKeyListener(new TextfieldChangeListener());
 		panel.add(fldUnitQuanitity);
+		
 
 		this.add(panel, BorderLayout.CENTER);
 		
@@ -107,6 +109,10 @@ public class PartDetailView extends MDIChild implements Observer {
 		fldVendor.setText("" + myPart.getVendor());
 		fldVendorPartNum.setText("" + myPart.getVendorPartNumber());
 		fldUnitQuanitity.setText("" + myPart.getUnitQuanitity());
+		
+		
+		
+
 		// window title
 		this.setTitle(myPart.getPartName());
 		//flag as unchanged
@@ -145,6 +151,7 @@ public class PartDetailView extends MDIChild implements Observer {
 			return false;
 		}
 		
+		
 		String testVendorPartNum = fldVendorPartNum.getText().trim();
 		if(!myPart.validVendorPartNumber(testVendorPartNum)) {
 			parent.displayChildMessage(Part.ERRORMSG_INVALID_VENDOR_PART_NUMBER);
@@ -162,6 +169,7 @@ public class PartDetailView extends MDIChild implements Observer {
 				refreshFields();
 			return false;
 		}
+		
 
 		//fields are valid so save to model
 		try {
@@ -170,6 +178,7 @@ public class PartDetailView extends MDIChild implements Observer {
 			myPart.setVendor(testVendor);
 			myPart.setVendorPartNumber(testVendorPartNum);
 			myPart.setUnitQuanitity(testUQ);
+			
 		} catch(Exception e) {
 			parent.displayChildMessage(e.getMessage());
 			refreshFields();
