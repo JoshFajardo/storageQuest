@@ -122,10 +122,30 @@ public class MDIParent extends JFrame{
 			openMDIChild(vAdd);
 			break;
 			
-		case DELETE_PART:
+		case DELETE_WAREHOUSE:
+			Warehouse wDelete = ((WarehouseListView)caller).getSelectedWarehouse();
+			warehouseList.removeWarehouseFromList(wDelete);
+			//close all the details that are based on this warehouse
+			for(int i = openViews.size() - 1; i>=0; i--){
+				MDIChild c = openViews.get(i);
+				if(c instanceof WarehouseDetailView){
+					//so if the detail view of the deleted object is showing, close it
+					if(((WarehouseDetailView) c).getMyWarehouse().getId() == wDelete.getId())
+						c.closeFrame();
+				}
+			}
+			//delete warehouse from the database
+			try{
+				wDelete.delete();
+				this.displayChildMessage("Warehouse Deleted");
+			}catch (GatewayException e){
+				System.err.println(e.getMessage());
+				this.displayChildMessage("Error: Could not delete Warehouse!");
+			}
+			
+			
 			break;
-		default:
-			break;
+		
 	
 	
 		}

@@ -78,53 +78,36 @@ public class WarehouseListView extends MDIChild{
 		deleteButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
-				
-				try{
-					int index = listWarehouse.getSelectedIndex();
-					warehouse = myList.getElementAt(index);
-					
-					int test = JOptionPane.showConfirmDialog(parent, "Do you want to delete " + warehouse.getFullName()+"?", "Delete", JOptionPane.YES_NO_OPTION);
-					if(test == JOptionPane.YES_OPTION){
-						listNew.removeWarehouseFromList(warehouse);
-						if(index == myList.getSize())
-							index--;
-						listWarehouse.setSelectedIndex(index);
-					
-						listWarehouse.updateUI();
-					}
-				}catch(Exception ex){
-					parent.displayChildMessage("No warehouse selected!");
-					return;
-				}
+				deleteWarehouse();
 			}
 		});
 		panel.add(deleteButton);
 		this.add(panel,BorderLayout.NORTH);
-		
-		/*
-		panel.setLayout(new FlowLayout());
-		JButton AddButton = new JButton("Add New!");
-		AddButton.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e){
-				int index = myList.getSize();
-				//decrement because index and size can't be the same, throw exception
-				index--;
-				warehouse = myList.getElementAt(index);
-				listNew.addWarehouseToList(new Warehouse("New_Entry " +index ,
-						"<Address>",
-						"<State>",
-						"<City>",
-						"00000",
-						0));
-				listWarehouse.updateUI();
-			}
-		});
-		panel.add(AddButton);
-		this.add(panel,BorderLayout.EAST);
-		*/
+
 		
 	}
+	
+	private void deleteWarehouse(){
+		try{
+			int index = listWarehouse.getSelectedIndex();
+			warehouse = myList.getElementAt(index);
+			
+			int test = JOptionPane.showConfirmDialog(parent, "Do you want to delete " + warehouse.getFullName()+"?", "Delete", JOptionPane.YES_NO_OPTION);
+			if(test == JOptionPane.YES_OPTION){
+				listNew.removeWarehouseFromList(warehouse);
+				if(index == myList.getSize())
+					index--;
+				listWarehouse.setSelectedIndex(index);
+			
+				listWarehouse.updateUI();
+				parent.doCommand(MenuCommands.DELETE_WAREHOUSE,this);
+			}
+		}catch(Exception ex){
+			parent.displayChildMessage("No warehouse selected!");
+			return;
+		}
+	}
+	
 	
 	public void openDetailView(){
 		parent.doCommand(MenuCommands.SHOW_DETAIL_WAREHOUSE,this);
