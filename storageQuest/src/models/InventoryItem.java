@@ -7,9 +7,9 @@ import java.util.Observer;
 import java.util.UUID;
 
 import database.GatewayException;
-import database.InventoryItemTableGateway;
+import database.InventoryTableGateway;
 
-public class InventoryItem extends Observable /*implements Observer*/ {
+public class InventoryItem extends Observable implements Observer {
 
 	public static final String ERRORMSG_INVALID_ID = "Invalid Id!";
 	public static final String ERRORMSG_INVALID_WAREHOUSE_ID = "Invalid Warehouse Id";
@@ -26,7 +26,7 @@ public class InventoryItem extends Observable /*implements Observer*/ {
 	
 	private double quantity;
 	
-	private InventoryItemTableGateway gateway;
+	private InventoryTableGateway gateway;
 	
 	private List<InventoryItem> myInventory;
 	
@@ -99,9 +99,24 @@ public class InventoryItem extends Observable /*implements Observer*/ {
 	
 	
 	
+	public InventoryTableGateway getGateway(){
+		return gateway;
+	}
+	
+	public void setGateway(InventoryTableGateway gateway){
+		this.gateway = gateway;
+	}
 	
 	
 	
 	
+	@Override
+	public void update(Observable o, Object arg){
+		
+		if(o instanceof WarehousePart){
+			this.setChanged();
+			this.notifyObservers();
+		}
+	}
 	
 }
