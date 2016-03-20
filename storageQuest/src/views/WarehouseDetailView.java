@@ -93,7 +93,66 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 	fldStorageCap = new JTextField("");
 	panel.add(fldStorageCap);
 	
-	this.add(panel);
+	this.add(panel,BorderLayout.CENTER);
+	
+	
+	//adds parts in the warehouse list on the right side of the view
+	lmMyParts = new WarehousePartListModel();
+	listMyParts = new JList(lmMyParts);
+	
+	listMyParts.setDropMode(DropMode.INSERT);
+	//used for drag and drop, not there yet
+	//listMyParts.setTransferHandler(new PartDropTransferHandler());
+	
+	//event handler for a double click
+	listMyParts.addMouseListener(new MouseAdapter(){
+		public void mouseClicked(MouseEvent evt){
+			
+			if(evt.getClickCount() == 2){
+				int index = listMyParts.locationToIndex(evt.getPoint());
+				//gets the warehouse at the index
+				selectedModel = lmMyParts.getElementAt(index);
+				
+				openWarehousePartDetailView();
+			}else{
+				//if the use clicked the row's delete button
+				Point pt = evt.getPoint();
+				int index = listMyParts.locationToIndex(pt);
+				//if the click was after the last row then don't try to process the delete
+				Rectangle rect = listMyParts.getCellBounds(listMyParts.getModel().getSize() - 1, listMyParts.getModel().getSize() - 1);
+				double listRowMaxY = rect.getY() + rect.getHeight();
+				if(evt.getY() > listRowMaxY)
+					return;
+				
+				WarehousePartListCellRenderer plcr = (WarehousePartListCellRenderer) listMyParts.getCellRenderer();
+				if(plcr.mouseOnButton(evt)){
+					selectedModel = lmMyParts.getElementAt(index);
+					//delete prompt to user
+					String [] options = {"Yes", "No"};
+					if(JOptionPane.showOptionDialog(myFrame
+	        				, "Do you really want to delete " + selectedModel.getPart().getPartName() + " ? This only deletes the part from the warehouse."
+	        				, "Confirm Deletion"
+	        				, JOptionPane.YES_NO_OPTION
+	        			    , JOptionPane.QUESTION_MESSAGE
+	        			    , null
+	        			    , options
+	        				, options[1]) == JOptionPane.NO_OPTION) {
+	        			return;
+	        		}
+					
+					selectedModel.getOwner().deletePart(selectedModel);
+				}
+			}
+		}
+	});
+	
+	listMyParts.setCellRenderer(new WarehousePartListCellRenderer());
+	//size of the list in the window
+	listMyParts.setPreferredSize(new Dimension(200, 200));
+	panel = new JPanel();
+	panel.add(new JScrollPane(listMyParts));
+	this.add(panel, BorderLayout.EAST);
+	
 	
 	panel = new JPanel();
 	panel.setLayout(new FlowLayout());
@@ -110,14 +169,14 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 	
 	refreshFields();
 	
-	this.setPreferredSize(new Dimension(360, 210));
+	this.setPreferredSize(new Dimension(500, 230));
 	
 	}
 	/*
 	 * @TODO
 	 */
 	public void openWarehousePartDetailView(){
-		//parent.doCommand(MenuCommands.SHOW_DETAIL_WAREHOUSE_PART, this);
+		parent.doCommand(MenuCommands.SHOW_DETAIL_WAREHOUSE_PART, this);
 	}
 	
 	public WarehousePart getSelectedWarehousePart(){
@@ -197,12 +256,13 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 			myWarehouse.setStorageCapacity(testStorageCap);
 		}catch(Exception e){
 			parent.displayChildMessage(e.getMessage());
-			System.out.println("line 200");
+			
 			refreshFields();
 			return false;
 		}
 		try{
 		myWarehouse.finishUpdate();
+		setChanged(false);
 		//parent.displayChildMessage("Changes Saved");
 		}catch(GatewayException e){
 			refreshFields();
@@ -218,6 +278,8 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 		
 		myWarehouse.deleteObserver(this);
 	}
+	
+	//this is called by the observable
 	@Override
 	public void update(Observable o, Object arg){
 			refreshFields();

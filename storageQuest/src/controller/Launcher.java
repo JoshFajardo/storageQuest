@@ -52,7 +52,7 @@ public class Launcher {
 		appFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		
-		appFrame.setSize(640,640);
+		appFrame.setSize(640,500);
 		
 		appFrame.setVisible(true);
 		

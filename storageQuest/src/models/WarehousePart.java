@@ -20,6 +20,8 @@ public class WarehousePart extends Observable implements Observer {
 	
 	private Date ownerStartDate;
 	
+	private WarehousePart quantity; 
+	
 	public WarehousePart(Warehouse w, Part p){
 		owner = w;
 		part = p;
@@ -33,12 +35,21 @@ public class WarehousePart extends Observable implements Observer {
 	public void setOwner(Warehouse owner){
 		this.owner = owner;
 	}
+	
 	public Part getPart(){
 		return part;
 	}
 	public void setPart(Part part){
 		this.part = part;
 	}
+	
+	public WarehousePart getQuantity(){
+		return quantity;
+	}
+	public void setQuantity(WarehousePart quantity){
+		this.quantity = quantity;
+	}
+	
 	public Date getOwnerStartDate(){
 		return ownerStartDate;
 	}

@@ -20,6 +20,9 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import models.Part;
 import models.PartList;
 import models.Warehouse;
+import models.WarehouseList;
+import models.InventoryItem;
+
 
 public class InventoryTableGatewayMySQL implements InventoryTableGateway {
 
@@ -60,7 +63,125 @@ public class InventoryTableGatewayMySQL implements InventoryTableGateway {
         return mysqlDS;
 	}
 	
+
+	public Warehouse fetchWarehouse(long id) throws GatewayException{
+		Warehouse w = null;
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try{
+			st = conn.prepareStatement("select * from warehouse where id = ? ");
+			st.setLong(1, id);
+			rs = st.executeQuery();
+			
+			rs.next();
+			w = new Warehouse(rs.getLong("id"),rs.getString("Warehouse_name"),
+					rs.getString("address"),rs.getString("city"),
+					rs.getString("state"),rs.getString("zip"),rs.getInt("StorageCap"));
+		}catch(SQLException e){
+			throw new GatewayException(e.getMessage());
+		}finally {
+			try{
+				// this is closing the connection
+				if(rs != null)
+					rs.close();
+				if(st != null)
+					st.close();
+			}catch (SQLException e){
+				throw new GatewayException("SQL Error: "+ e.getMessage());
+			}
+		}
+		return w;
+	}
+	
+	public List<Warehouse> fetchWarehouse() throws GatewayException {
+		ArrayList<Warehouse> ret = new ArrayList<Warehouse>();
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try {
+			//fetch the Warehouse
+			st = conn.prepareStatement("select * from warehouse");
+			rs = st.executeQuery();
+			//adds each to a list of warehouses
+			while(rs.next()) {
+				Warehouse w = new Warehouse(rs.getLong("id"),rs.getString("Warehouse_name"),
+						rs.getString("address"),rs.getString("city"),
+						rs.getString("state"),rs.getString("zip"),rs.getInt("StorageCap"));
+
+				ret.add(w);
+			}
+		} catch (SQLException e) {
+			throw new GatewayException(e.getMessage());
+		} finally {
+			
+			try {
+				if(rs != null)
+					rs.close();
+				if(st != null)
+					st.close();
+			} catch (SQLException e) {
+				throw new GatewayException("SQL Error: " + e.getMessage());
+			}
+		}
+		
+		return ret;
+	}
 	
 	
 	
+	public void close() {
+		if(DEBUG)
+			System.out.println("Closing db connection...");
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public InventoryItem fetchInventory(long id) throws GatewayException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<InventoryItem> fetchInventory() throws GatewayException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void getWarehouseListValues(List<Integer> keys, List<String> values) throws GatewayException {
+		// gets warehouse name and id
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try{
+			//fetch the warehouse name
+			st = conn.prepareStatement("select warehouse_name from warehouse order by id ");
+			rs = st.executeQuery();
+			// go through the records and populate the list
+			while(rs.next()){
+				keys.add(rs.getInt("id"));
+				values.add(rs.getString("warehouse_name"));
+			}
+		}catch(SQLException e){
+			throw new GatewayException(e.getMessage());
+		}finally{
+			
+			try{
+				if(rs != null)
+					rs.close();
+				if(st != null)
+					st.close();
+			}catch (SQLException e){
+				throw new GatewayException("SQL Exception: "+ e.getMessage());			
+			}
+		}
+	}
+
+	@Override
+	public void getPartListValues(List<Integer> keys, List<String> values) throws GatewayException {
+		// TODO Auto-generated method stub
+		
+	}
 }

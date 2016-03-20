@@ -21,6 +21,8 @@ public class PartList extends Observable implements Observer {
 	//connectin for the part list
 	private PartTableGateway gateway;
 	
+	private List<Part> partsWarehouse;
+	
 	
 	private boolean dontNotify;
 	
@@ -29,6 +31,7 @@ public class PartList extends Observable implements Observer {
 		myIdMap = new HashMap<Long, Part>();
 		dontNotify = false;
 		newRecords = new ArrayList<Part>();
+		partsWarehouse = new ArrayList<Part>();
 	}
 	
 	public void loadFromGateway(){
@@ -43,7 +46,7 @@ public class PartList extends Observable implements Observer {
 		
 		dontNotify = true;
 		
-		//warehouse not in the database needs to be removed
+		//part not in the database needs to be removed
 		for(int i = myList.size() -1; i >= 0; i--){
 			Part p = myList.get(i);
 			boolean removeRecord = true;
@@ -75,12 +78,27 @@ public class PartList extends Observable implements Observer {
 		dontNotify = false;
 		
 	}
+	
+	public void getWarehouseId(long id) throws GatewayException{
+		
+		List<Part> partsWarehouse = null;
+		if(id == 0)
+			return;
+		try{
+			partsWarehouse = gateway.getPartsByWarehouseId(id);
+		}catch(GatewayException e){
+			throw new GatewayException(e.getMessage());
+		}
+	}
+	
 	public Part findById(long id) {
 		//checks the identity map
 		if(myIdMap.containsKey(new Long(id)))
 			return myIdMap.get(new Long(id));
 		return null;
 	}
+	
+
 	
 	public void addPartToList(Part p) {
 		myList.add(p);
@@ -112,6 +130,7 @@ public class PartList extends Observable implements Observer {
 		}
 		return null;
 	}
+	
 	
 // these are accessor methods
 	

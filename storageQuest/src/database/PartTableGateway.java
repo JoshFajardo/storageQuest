@@ -12,5 +12,6 @@ public interface PartTableGateway {
 	public abstract List<Part> fetchParts() throws GatewayException;
 	
 	public abstract void close();
+	public abstract List<Part> getPartsByWarehouseId(long id) throws GatewayException;
 
 }

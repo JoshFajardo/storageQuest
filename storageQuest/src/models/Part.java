@@ -5,6 +5,8 @@ import java.util.Observable;
 import database.PartTableGateway;
 import database.GatewayException;
 
+import models.Warehouse;
+
 public class Part extends Observable {
 
 	
@@ -84,7 +86,18 @@ public class Part extends Observable {
 				throw new GatewayException(e.getMessage());
 			}
 		}
-		
+	/*
+	public void getWarehouseId() throws GatewayException{
+		Warehouse w = new Warehouse();
+		if(w.getId()== 0)
+			return;
+		try{
+			gateway.getPartsByWarehouseId(w.getId());
+		}catch(GatewayException e){
+			throw new GatewayException(e.getMessage());
+		}
+	}
+		*/
 	
 	
 	public boolean validPartName(String pn){

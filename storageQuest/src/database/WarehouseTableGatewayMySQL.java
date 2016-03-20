@@ -285,19 +285,19 @@ public class WarehouseTableGatewayMySQL implements WarehouseTableGateway{
 			st = conn.prepareStatement("select * from warehouse_part where warehouse_id = ?");
 			st.setLong(1, w.getId());
 			rs = st.executeQuery();
-			//add each to list of people to return
+			//add each to list of warehouse to return
 			while(rs.next()) {
 				Part p = pList.findById(rs.getLong("part_id"));
 				if(p == null)
 					throw new GatewayException("No part found in the part list with id: " + rs.getLong("part_id"));
 				WarehousePart wp = new WarehousePart(w, p);
-				try {
+				/*try {
 					String testDate = rs.getString("warehouse_start_date");
 					if(testDate.length() > 0 && !testDate.equals("0000-00-00"))
 						wp.setOwnerStartDate(DB_DATE_FORMAT.parse(testDate));
 				} catch (ParseException | SQLException e) {
 					System.err.println("Invalid warehouse start date read from database. Initializing to now...");
-				}
+				}*/
 				ret.add(wp);
 			}
 		} catch (SQLException e) {

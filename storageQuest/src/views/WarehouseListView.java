@@ -54,7 +54,7 @@ public class WarehouseListView extends MDIChild{
 		listWarehouse = new JList<Warehouse>(myList);
 		//uses the cell renderer instead of the toString
 		listWarehouse.setCellRenderer(new WarehouseListCellRenderer());
-		listWarehouse.setPreferredSize(new Dimension(200,300));
+		listWarehouse.setPreferredSize(new Dimension(200,200));
 		//event handler for a double click of the mouse
 		listWarehouse.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent evt){
@@ -70,9 +70,9 @@ public class WarehouseListView extends MDIChild{
 		
 		this.add(new JScrollPane(listWarehouse));
 		
-		this.setPreferredSize(new Dimension(340,200));
+		//this.setPreferredSize(new Dimension(200,200));
 		
-		//panel = new JPanel();
+		panel = new JPanel();
 		panel.setLayout(new FlowLayout());
 		JButton deleteButton = new JButton("Delete!");
 		deleteButton.addActionListener(new ActionListener(){
@@ -82,10 +82,24 @@ public class WarehouseListView extends MDIChild{
 			}
 		});
 		panel.add(deleteButton);
-		this.add(panel,BorderLayout.NORTH);
+		this.add(panel,BorderLayout.SOUTH);
+		this.setPreferredSize(new Dimension(240, 200));
 
-		
+/*
+		panel.setLayout(new FlowLayout());
+		JButton checkButton = new JButton ("Check Inventory");
+		checkButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				//pullUpPartList();
+			}
+		});
+		panel.add(checkButton);
+		this.add(panel,BorderLayout.NORTH);
+	*/
 	}
+	
+	
 	
 	private void deleteWarehouse(){
 		try{
@@ -136,7 +150,7 @@ public class WarehouseListView extends MDIChild{
 		this.myList = myList;
 	}
 	
-	public JList<Warehouse> getListPeople(){
+	public JList<Warehouse> getListWarehouse(){
 		return listWarehouse;
 	}
 	

@@ -31,6 +31,7 @@ import models.WarehousePart;
 
 import views.PartDetailView;
 import views.PartListView;
+import views.WarehousePartDetailView;
 import views.WarehouseDetailView;
 import views.WarehouseListView;
 
@@ -177,7 +178,12 @@ public class MDIParent extends JFrame{
 			}
 			break;
 			
+		case SHOW_DETAIL_WAREHOUSE_PART:
 			
+			WarehousePart wp = ((WarehouseDetailView) caller).getSelectedWarehousePart();
+	    	WarehousePartDetailView vWPart = new WarehousePartDetailView("", wp, this);
+			openMDIChild(vWPart);
+			break;
 		}
 	
 		

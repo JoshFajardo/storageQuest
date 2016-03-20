@@ -12,4 +12,8 @@ public interface InventoryTableGateway {
 	
 	public abstract List<InventoryItem> fetchInventory() throws GatewayException;
 
+	
+	public abstract void getWarehouseListValues(List<Integer> keys, List<String> values)throws GatewayException;
+	public abstract void getPartListValues(List<Integer> keys, List<String> values)throws GatewayException;
+	
 }
