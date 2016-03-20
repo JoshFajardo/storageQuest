@@ -72,5 +72,7 @@ public class MDIMenu extends JMenuBar {
 		
 		menu.add(menuItem);
 		this.add(menu);
+		
+		
 	}
 }

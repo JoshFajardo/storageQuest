@@ -25,12 +25,13 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 
-import controller.PartListController;
+import controller.WarehouseListController;
 import controller.MDIChild;
 import controller.MDIParent;
 import controller.MenuCommands;
 import controller.PartListController;
 import models.Part;
+import models.TransferablePart;
 import models.Warehouse;
 
 
@@ -54,8 +55,8 @@ public class PartListView extends MDIChild {
 		myList = list;
 		listParts = new JList<Part>(myList);
 		//allow drag and drop from dog list to person detail view dog list
-		//listParts.setDragEnabled(true);
-		//listParts.setTransferHandler(new PartDragTransferHandler());
+		listParts.setDragEnabled(true);
+		listParts.setTransferHandler(new PartDragTransferHandler());
 		
 		//use our custom cell renderer instead of default (don't want to use Person.toString())
 		listParts.setCellRenderer(new PartListCellRenderer());
@@ -128,9 +129,7 @@ public class PartListView extends MDIChild {
 		
 	}
 	
-	/**
-	 * Opens a DogDetailView with the given Dog object
-	 */
+
 	public void openDetailView() {
 		parent.doCommand(MenuCommands.SHOW_DETAIL_PART, this);
 	}
@@ -174,8 +173,8 @@ public class PartListView extends MDIChild {
 	public void setSelectedModel(Part selectedModel) {
 		this.selectedModel = selectedModel;
 	}
-	/*  drag and drop methods, still thinking of using this
-	private class DogDragTransferHandler extends TransferHandler {
+	// drag and drop methods, still thinking of using this
+	private class PartDragTransferHandler extends TransferHandler {
 		private int index = 0;
 
 		public int getSourceActions(JComponent comp) {
@@ -183,11 +182,11 @@ public class PartListView extends MDIChild {
 	    }
 				
 		public Transferable createTransferable(JComponent comp) {
-	        index = listDogs.getSelectedIndex();
+	        index = listParts.getSelectedIndex();
 	        if (index < 0 || index >= myList.getSize()) {
 	            return null;
 	        }
-	        return new TransferableDog( (Dog) listDogs.getSelectedValue());
+	        return new TransferablePart( (Part) listParts.getSelectedValue());
 	    }
 	    
 	    public void exportDone(JComponent comp, Transferable trans, int action) {
@@ -195,7 +194,7 @@ public class PartListView extends MDIChild {
 	            return;
 	        }
 	    }
-	}*/
+	}
 
 
 }

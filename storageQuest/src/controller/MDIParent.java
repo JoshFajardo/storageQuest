@@ -184,6 +184,8 @@ public class MDIParent extends JFrame{
 	    	WarehousePartDetailView vWPart = new WarehousePartDetailView("", wp, this);
 			openMDIChild(vWPart);
 			break;
+			
+		
 		}
 	
 		

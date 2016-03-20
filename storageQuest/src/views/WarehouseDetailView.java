@@ -36,6 +36,8 @@ import controller.MDIChild;
 import controller.MDIParent;
 import controller.MenuCommands;
 import database.GatewayException;
+import models.Part;
+import models.TransferablePart;
 import models.Warehouse;
 import models.WarehouseList;
 import models.WarehousePart;
@@ -43,6 +45,7 @@ import models.WarehousePart;
 public class WarehouseDetailView extends MDIChild implements Observer{
 
 	private Warehouse myWarehouse;
+	
 	
 	private JLabel fldId;
 	private JTextField fldWarehouseName, fldAddress, fldCity, fldState, fldZip;
@@ -102,7 +105,7 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 	
 	listMyParts.setDropMode(DropMode.INSERT);
 	//used for drag and drop, not there yet
-	//listMyParts.setTransferHandler(new PartDropTransferHandler());
+	listMyParts.setTransferHandler(new PartDropTransferHandler());
 	
 	//event handler for a double click
 	listMyParts.addMouseListener(new MouseAdapter(){
@@ -284,7 +287,7 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 	public void update(Observable o, Object arg){
 			refreshFields();
 			
-			//lmMyParts.refreshContents();
+			lmMyParts.refreshContents();
 	}
 	
 	public Warehouse getMyWarehouse(){
@@ -313,7 +316,43 @@ public class WarehouseDetailView extends MDIChild implements Observer{
 		
 	}
 	
-	
-	
+	private class PartDropTransferHandler extends TransferHandler{
+		
+		public boolean canImport (TransferSupport support){
+			if(!support.isDrop()){
+				return false;
+			}
+			return support.isDataFlavorSupported(TransferablePart.PART_FLAVOR);
+		}
+		
+		public boolean importData(TransferSupport support){
+			if(!canImport(support)) {
+				return false;
+			}
+			
+			//gets the drop location
+			JList.DropLocation dl = (JList.DropLocation)support.getDropLocation();
+			
+			int index = dl.getIndex();
+			
+			//get the data needed
+			
+			Part data;
+			try {
+				data = (Part) support.getTransferable().getTransferData(TransferablePart.PART_FLAVOR);
+				
+			}catch (UnsupportedFlavorException e){
+				e.printStackTrace();
+				return false;
+			}catch (java.io.IOException e){
+				e.printStackTrace();
+				return false;
+			}
+			
+			boolean partAdded = myWarehouse.addPart(data);
+			
+			return true;
+		}
+	}
 }
 	
