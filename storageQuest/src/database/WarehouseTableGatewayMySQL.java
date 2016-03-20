@@ -291,13 +291,13 @@ public class WarehouseTableGatewayMySQL implements WarehouseTableGateway{
 				if(p == null)
 					throw new GatewayException("No part found in the part list with id: " + rs.getLong("part_id"));
 				WarehousePart wp = new WarehousePart(w, p);
-				/*try {
-					String testDate = rs.getString("warehouse_start_date");
-					if(testDate.length() > 0 && !testDate.equals("0000-00-00"))
-						wp.setOwnerStartDate(DB_DATE_FORMAT.parse(testDate));
-				} catch (ParseException | SQLException e) {
-					System.err.println("Invalid warehouse start date read from database. Initializing to now...");
-				}*/
+				try {
+					int testQ = rs.getInt("quantity");
+					if(testQ > 0 && testQ != 0)
+						wp.setQuantity(testQ);
+				} catch (SQLException e) {
+					System.err.println("Invalid warehouse Part Quantity");
+				}
 				ret.add(wp);
 			}
 		} catch (SQLException e) {
@@ -324,9 +324,9 @@ public class WarehouseTableGatewayMySQL implements WarehouseTableGateway{
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement("update warehouse_part "
-					+ " set warehouse_start_date = ? "
+					+ " set quantity = ? "
 					+ " where warehouse_id = ? and part_id = ? ");
-			st.setString(1, DB_DATE_FORMAT.format(wp.getOwnerStartDate()));
+			st.setLong(1, wp.getQuantity());
 			st.setLong(2, wp.getOwner().getId());	
 			st.setLong(3, wp.getPart().getId());	
 			st.executeUpdate();
@@ -349,11 +349,11 @@ public class WarehouseTableGatewayMySQL implements WarehouseTableGateway{
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement("insert into warehouse_part "
-					+ " (warehouse_id, part_id, owner_start_date) "
+					+ " (warehouse_id, part_id, quantity) "
 					+ " values (?, ?, ?) ");
 			st.setLong(1, wp.getOwner().getId());	
 			st.setLong(2, wp.getPart().getId());	
-			st.setString(3, DB_DATE_FORMAT.format(wp.getOwnerStartDate()));
+			st.setLong(3, wp.getQuantity());
 			st.executeUpdate();
 		} catch (SQLException e) {
 			throw new GatewayException(e.getMessage());

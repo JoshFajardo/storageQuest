@@ -34,7 +34,7 @@ public class WarehousePartDetailView extends MDIChild implements Observer{
 	
 	private JLabel fldWarehouseName;
 	private JLabel fldPartNumber;
-	private JLabel fldQuantity;
+	private JTextField fldQuantity;
 	
 	
 
@@ -61,8 +61,9 @@ public class WarehousePartDetailView extends MDIChild implements Observer{
 		panel.add(fldPartNumber);
 		
 		panel.add(new JLabel("Quantity"));
-		fldQuantity = new JLabel(warehousePart.getQuantity().toString());
+		fldQuantity = new JTextField("");
 		panel.add(fldQuantity);
+		
 		
 		
 		this.add(panel, BorderLayout.CENTER);
@@ -90,7 +91,7 @@ public class WarehousePartDetailView extends MDIChild implements Observer{
 	public void refreshFields(){
 		fldWarehouseName.setText(warehousePart.getOwner().getFullName());
 		fldPartNumber.setText(warehousePart.getPart().getPartNumber());
-		fldQuantity.setText(warehousePart.getQuantity().toString());
+		fldQuantity.setText(""+warehousePart.getQuantity());
 		
 		this.setTitle(warehousePart.getOwner().getFullName() + " | " + warehousePart.getPart().getPartNumber());
 		
@@ -103,11 +104,19 @@ public class WarehousePartDetailView extends MDIChild implements Observer{
 	@Override
 	public boolean saveModel(){
 		
-		WarehousePart testQ = null;
+		int testQ = 0;
 		try{
-			testQ =  testQ.getQuantity();
+			testQ =  Integer.parseInt(fldQuantity.getText());
 		}catch (Exception e){
 			parent.displayChildMessage("Could not change the Quantity");
+			refreshFields();
+			return false;
+		}
+		//fields are valid at this point, so save
+		try {
+			warehousePart.setQuantity(testQ);
+		} catch(Exception e) {
+			parent.displayChildMessage(e.getMessage());
 			refreshFields();
 			return false;
 		}
