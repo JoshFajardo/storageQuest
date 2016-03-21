@@ -107,9 +107,20 @@ public class PartListView extends MDIChild {
 		if(index >= myList.getSize())
 			return;
 		Part p = myList.getElementAt(index);
+		//System.out.println(p.getId());
 		if(p == null)
 			return;
 		selectedModel = p;
+		//checking for parts in warehouses, i think the logic is off, but it works
+		try{
+			p.partAssociation();
+		}
+		catch(Exception e){
+			parent.displayChildMessage("Delete all part Associations, before deleting "+p.getPartName());
+			return;
+		}
+			
+		
 		
 		//confirm deletion
 		String [] options = {"Yes", "No"};

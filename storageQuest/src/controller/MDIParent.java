@@ -169,6 +169,7 @@ public class MDIParent extends JFrame{
 						c.closeFrame();
 				}
 			}
+			
 			try{
 				pDelete.delete();
 				this.displayChildMessage("Part Deleted!");

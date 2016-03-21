@@ -85,18 +85,7 @@ public class WarehouseListView extends MDIChild{
 		this.add(panel,BorderLayout.SOUTH);
 		this.setPreferredSize(new Dimension(240, 200));
 
-/*
-		panel.setLayout(new FlowLayout());
-		JButton checkButton = new JButton ("Check Inventory");
-		checkButton.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e){
-				//pullUpPartList();
-			}
-		});
-		panel.add(checkButton);
-		this.add(panel,BorderLayout.NORTH);
-	*/
+
 	}
 	
 	
@@ -106,6 +95,11 @@ public class WarehouseListView extends MDIChild{
 			int index = listWarehouse.getSelectedIndex();
 			warehouse = myList.getElementAt(index);
 			
+			if(warehouse.getMyParts().size()> 0){
+				parent.displayChildMessage(warehouse.getWarehouseName()+" still has parts in its inventory!");
+				return;
+			}
+				
 			int test = JOptionPane.showConfirmDialog(parent, "Do you want to delete " + warehouse.getFullName()+"?", "Delete", JOptionPane.YES_NO_OPTION);
 			if(test == JOptionPane.YES_OPTION){
 				listNew.removeWarehouseFromList(warehouse);

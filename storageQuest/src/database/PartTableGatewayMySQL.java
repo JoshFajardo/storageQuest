@@ -112,9 +112,9 @@ public class PartTableGatewayMySQL implements PartTableGateway {
 			
 			//MAKE SURE TO INCLUDE THIS
 			
-			//st = conn.prepareStatement("delete from warehouse_part where part_id = ? ");
-			//st.setLong(1, id);
-			//st.executeUpdate();
+			st = conn.prepareStatement("delete from warehouse_part where part_id = ? ");
+			st.setLong(1, id);
+			st.executeUpdate();
 			
 			//part
 			//st.close();
@@ -254,6 +254,41 @@ public class PartTableGatewayMySQL implements PartTableGateway {
 			//fetch parts
 			st = conn.prepareStatement("select * from part where id = ?");
 			st.setLong(1, id);
+			rs = st.executeQuery();
+			//add each to list of parts to return
+			while(rs.next()) {
+				Part p = new Part(rs.getLong("id"), rs.getString("part_name"), rs.getString("part_number")
+						, rs.getString("vendor"), rs.getString("vendor_part_num")
+						, rs.getString("unit_quanitity"));
+				ret.add(p);
+			}
+		} catch (SQLException e) {
+			throw new GatewayException(e.getMessage());
+		} finally {
+			//clean up
+			try {
+				if(rs != null)
+					rs.close();
+				if(st != null)
+					st.close();
+			} catch (SQLException e) {
+				throw new GatewayException("SQL Error: " + e.getMessage());
+			}
+		}
+		
+		return ret;
+	}
+
+	@Override
+	public List<Part> check4PartAssociation(long id) throws GatewayException{
+		
+		ArrayList<Part> ret = new ArrayList<Part>();
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try {
+			//fetch parts
+			st = conn.prepareStatement("select * from warehouse_part where part_id = ? ");
+			st.setLong(1,id);
 			rs = st.executeQuery();
 			//add each to list of parts to return
 			while(rs.next()) {

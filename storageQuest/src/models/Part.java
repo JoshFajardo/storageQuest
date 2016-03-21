@@ -86,18 +86,17 @@ public class Part extends Observable {
 				throw new GatewayException(e.getMessage());
 			}
 		}
-	/*
-	public void getWarehouseId() throws GatewayException{
-		Warehouse w = new Warehouse();
-		if(w.getId()== 0)
+	
+	public void partAssociation() throws GatewayException{
+		if(this.getId() == 0)
 			return;
 		try{
-			gateway.getPartsByWarehouseId(w.getId());
+			gateway.check4PartAssociation(id);
 		}catch(GatewayException e){
 			throw new GatewayException(e.getMessage());
 		}
+		
 	}
-		*/
 	
 	
 	public boolean validPartName(String pn){

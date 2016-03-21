@@ -2,6 +2,7 @@ package database;
 
 import java.util.List;
 import models.Part;
+import models.WarehousePart;
 
 public interface PartTableGateway {
 	
@@ -13,5 +14,6 @@ public interface PartTableGateway {
 	
 	public abstract void close();
 	public abstract List<Part> getPartsByWarehouseId(long id) throws GatewayException;
+	public abstract List<Part> check4PartAssociation(long id) throws GatewayException;
 
 }
