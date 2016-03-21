@@ -95,6 +95,7 @@ public class WarehouseListView extends MDIChild{
 			int index = listWarehouse.getSelectedIndex();
 			warehouse = myList.getElementAt(index);
 			
+			//checking if the warehouse has a part in its inventory, if so you can't delete it
 			if(warehouse.getMyParts().size()> 0){
 				parent.displayChildMessage(warehouse.getWarehouseName()+" still has parts in its inventory!");
 				return;
