@@ -1,4 +1,4 @@
-package authentication;
+package login;
 
 public class SecurityException extends Exception {
 

@@ -1,4 +1,4 @@
-package authentication;
+package login;
 
 public class Session {
 	public static int nextId = 1;

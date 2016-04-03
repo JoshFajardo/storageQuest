@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyVetoException;
+import java.net.Authenticator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,6 +24,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import database.GatewayException;
+import login.User;
+import login.ABACPolicy;
+import login.SecurityException;
+import login.Verify;
+import login.Session;
 import models.Warehouse;
 import models.WarehouseList;
 import models.Part;
@@ -59,6 +65,7 @@ public class MDIParent extends JFrame{
 		
 		
 		openViews = new LinkedList<MDIChild>();
+
 		
 		MDIMenu menuBar = new MDIMenu(this);
 		setJMenuBar(menuBar);
@@ -79,6 +86,8 @@ public class MDIParent extends JFrame{
 	
 	public void doCommand(MenuCommands cmd, Container caller){
 		
+		Verify u = new Verify();
+		int id =0;
 		switch(cmd){
 		case APP_QUIT:
 			closeChildren();
@@ -186,7 +195,24 @@ public class MDIParent extends JFrame{
 			openMDIChild(vWPart);
 			break;
 			
+		case LOGIN_AS_BOB:
+			//Verify u = new Verify();
+			User user = new User("bob", "123456", "Boberino");
+			
+			try {
+				id = u.login(user.getLogin(), user.getPasswordHash());
+				displayChildMessage("Hello bob" + id);
+			} catch (SecurityException e) {
+				e.printStackTrace();
+				displayChildMessage("Unable to login as bob");
+			}
+			break;
 		
+		case LOGOUT:
+			
+			u.logout(id);
+			displayChildMessage("Logged out");
+			break;
 		}
 	
 		

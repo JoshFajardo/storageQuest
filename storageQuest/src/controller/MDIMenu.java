@@ -27,6 +27,57 @@ public class MDIMenu extends JMenuBar {
 		menu.add(menuItem);
 		this.add(menu);	
 		
+		menu = new JMenu("Login");
+		menuItem = new JMenuItem("login as bob");
+		menuItem.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				parent.doCommand(MenuCommands.LOGIN_AS_BOB, null);
+			}
+		});
+		menu.add(menuItem);
+		this.add(menu);
+		
+		menuItem = new JMenuItem("login as Sue");
+		menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				parent.doCommand(MenuCommands.LOGIN_AS_SUE, null);
+			}
+		});
+		menu.add(menuItem);
+		this.add(menu);
+		
+		menuItem = new JMenuItem("login as Ragnar");
+		menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				parent.doCommand(MenuCommands.LOGIN_AS_RAGNAR, null);
+			}
+		});
+		menu.add(menuItem);
+		this.add(menu);
+		
+		menuItem = new JMenuItem("login as Zeratul");
+		menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				parent.doCommand(MenuCommands.LOGIN_AS_ZERATUL, null);
+			}
+		});
+		menu.add(menuItem);
+		this.add(menu);
+		
+		menuItem = new JMenuItem("Logout");
+		menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				parent.doCommand(MenuCommands.LOGOUT, null);
+			}
+		});
+		menu.add(menuItem);
+		this.add(menu);
+		
 		
 		menu = new JMenu("Warehouses");
 		menuItem = new JMenuItem("Show Warehouse List");
@@ -39,7 +90,7 @@ public class MDIMenu extends JMenuBar {
 		menu.add(menuItem);
 		this.add(menu);		
 		
-		menu.add(menuItem);
+		//menu.add(menuItem);
 
 		menuItem = new JMenuItem("Add Warehouse");
 		menuItem.addActionListener(new ActionListener() {

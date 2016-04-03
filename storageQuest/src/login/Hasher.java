@@ -1,4 +1,4 @@
-package authentication;
+package login;
 
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
