@@ -26,6 +26,9 @@ public class ABACPolicy {
 		acl = new HashMap<String, HashMap<String, Boolean>>();
 		
 		createSimpleUserACLEntry("default",false,false,false,false,false);
+		createSimpleUserACLEntry("bob",true,true,true,true,false);
+		createSimpleUserACLEntry("sue",true,true,false,false,false);
+		createSimpleUserACLEntry("ragnar",true,true,true,true,true);
 	}
 	
 	
@@ -58,8 +61,9 @@ public class ABACPolicy {
 	
 	public boolean canUserAccessFunction(String userName, String functionName){
 		
-		if(!acl.containsKey("default"))
+		if(!acl.containsKey("default")){
 			return false;
+		}
 		HashMap<String, Boolean> userTable = acl.get("default");
 		
 		//gets user's table if it is in the acl

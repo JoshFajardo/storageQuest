@@ -19,6 +19,14 @@ public class Verify {
 		credentials = new ArrayList<User>();
 		credentials.add(u);
 		
+		User u1 = new User("sue","password", "pur-sue");
+		u1.setPasswordHash(Hasher.hashSha256(u1.getPassword()));
+		credentials.add(u1);
+		
+		User u2 = new User("ragnar","viking4life", "ragBrok");
+		u1.setPasswordHash(Hasher.hashSha256(u1.getPassword()));
+		credentials.add(u2);
+		
 		//initializes the session list
 		sessions = new ArrayList<Session>();
 		
@@ -26,6 +34,10 @@ public class Verify {
 		accessPolicy = new ABACPolicy();
 		//bob can view both the warehouse and part,as well as add and edit a part, but not delete one
 		accessPolicy.createSimpleUserACLEntry(u.getLogin(),true,true,true,true,false);
+		//sue can view both the warehouse and part,but can not add,edit,or delete a part
+		accessPolicy.createSimpleUserACLEntry(u1.getLogin(),true,true,false,false,false);
+		//ragnar can view both the warehouse and part,as well as add and edit a part,and delete a part
+		accessPolicy.createSimpleUserACLEntry(u2.getLogin(),true,true,true,true,true);
 		
 	}
 	/**
@@ -51,7 +63,6 @@ public class Verify {
 	public boolean serverStateHasAccess(int sessionId, String f) throws SecurityException{
 		for(Session s : sessions){
 			if(s.getSessionId() == sessionId){
-				
 				return accessPolicy.canUserAccessFunction(s.getSessionUser().getLogin(), f);
 			}
 		}

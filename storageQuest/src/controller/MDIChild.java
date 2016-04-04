@@ -19,6 +19,7 @@ public class MDIChild extends JPanel {
 	private boolean singleOpenOnly;
 	
 	private boolean changed;
+	private int num=0;
 	
 	public MDIChild(String title, MDIParent parent){
 		this(title);

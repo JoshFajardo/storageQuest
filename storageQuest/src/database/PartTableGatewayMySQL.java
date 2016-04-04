@@ -13,6 +13,8 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+
+
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import models.Part;
@@ -21,7 +23,6 @@ import models.Warehouse;
 public class PartTableGatewayMySQL implements PartTableGateway {
 
 	private static final boolean DEBUG = true;
-	
 	private Connection conn = null;
 	//this creates the database connection
 	
@@ -43,6 +44,7 @@ public class PartTableGatewayMySQL implements PartTableGateway {
 			throw new GatewayException("SQL Error: "+ e.getMessage());
 		}
 	}
+	
 	
 	public void close(){
 		if(DEBUG)
@@ -78,6 +80,7 @@ public class PartTableGatewayMySQL implements PartTableGateway {
 		ResultSet rs = null;
 		try {
 			//fetch part
+			conn.setAutoCommit(false);
 			st = conn.prepareStatement("select * from part where id = ? ");
 			st.setLong(1, id);
 			rs = st.executeQuery();
@@ -86,6 +89,7 @@ public class PartTableGatewayMySQL implements PartTableGateway {
 			p = new Part(rs.getLong("id"), rs.getString("part_name"), rs.getString("part_number")
 					, rs.getString("vendor"), rs.getString("vendor_part_num")
 					, rs.getString("unit_quanitity"));
+			
 		} catch (SQLException e) {
 			throw new GatewayException(e.getMessage());
 		} finally {
@@ -99,6 +103,7 @@ public class PartTableGatewayMySQL implements PartTableGateway {
 				throw new GatewayException("SQL Error: " + e.getMessage());
 			}
 		}
+		
 		return p;
 	}
 
@@ -117,7 +122,7 @@ public class PartTableGatewayMySQL implements PartTableGateway {
 			st.executeUpdate();
 			
 			//part
-			//st.close();
+			st.close();
 			
 			st = conn.prepareStatement("delete from part where id = ? ");
 			st.setLong(1, id);
@@ -188,7 +193,12 @@ public class PartTableGatewayMySQL implements PartTableGateway {
 	public void savePart(Part p) throws GatewayException {
 		//execute the update and throw exception if any problem
 		PreparedStatement st = null;
+		
 		try {
+			conn.setAutoCommit(false);
+			
+			conn.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+			
 			st = conn.prepareStatement("update part "
 					+ " set part_name = ?, part_number = ?, vendor = ?, vendor_part_num = ?, unit_quanitity = ? "
 					+ " where id = ? ");
@@ -199,19 +209,24 @@ public class PartTableGatewayMySQL implements PartTableGateway {
 			st.setString(5, p.getUnitQuanitity());
 			st.setLong(6, p.getId());
 			st.executeUpdate();
+			
+			
 		} catch (SQLException e) {
 			throw new GatewayException(e.getMessage());
 		} finally {
 			//clean up
-			try {
+			try {		
 				if(st != null)
 					st.close();
+					
+					//conn.commit();
+					//conn.setAutoCommit(true);
 			} catch (SQLException e) {
 				throw new GatewayException("SQL Error: " + e.getMessage());
 			}
-		}
+		}	
 	}
-
+	
 	@Override
 	public List<Part> fetchParts() throws GatewayException {
 		ArrayList<Part> ret = new ArrayList<Part>();
@@ -219,7 +234,7 @@ public class PartTableGatewayMySQL implements PartTableGateway {
 		ResultSet rs = null;
 		try {
 			//fetch parts
-			st = conn.prepareStatement("select * from part");
+			st = conn.prepareStatement("select * from part ");
 			rs = st.executeQuery();
 			//add each to list of parts to return
 			while(rs.next()) {

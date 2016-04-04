@@ -52,6 +52,8 @@ public class MDIParent extends JFrame{
 	private WarehouseList newList;
 	private PartList partList;
 	
+	private String name = "guest";
+	private int num = 0;
 	
 	private List<MDIChild> openViews;
 	
@@ -86,8 +88,11 @@ public class MDIParent extends JFrame{
 	
 	public void doCommand(MenuCommands cmd, Container caller){
 		
-		Verify u = new Verify();
-		int id =0;
+		//Verify u = new Verify();
+		
+		
+		ABACPolicy pol = new ABACPolicy();
+		
 		switch(cmd){
 		case APP_QUIT:
 			closeChildren();
@@ -110,6 +115,10 @@ public class MDIParent extends JFrame{
 		
 			
 		case SHOW_LIST_PARTS :
+			if(pol.canUserAccessFunction(name, "part.view")==false){
+				displayChildMessage("Sorry "+name+" you don't have access");
+				break;
+			}
 			partList.loadFromGateway();
 			
 			PartListView pv1 = new PartListView("Part List", new PartListController(partList),this);
@@ -117,8 +126,13 @@ public class MDIParent extends JFrame{
 			break;
 			
 		case SHOW_DETAIL_PART:
+			if(pol.canUserAccessFunction(name, "part.edit")==false){
+				displayChildMessage("Sorry "+name+" you don't have access");
+				break;
+			}
 			Part p = ((PartListView)caller).getSelectedPart();
 			PartDetailView PartView = new PartDetailView(p.getPartName(),p,this);
+			
 			openMDIChild(PartView);
 			break;
 			
@@ -155,7 +169,10 @@ public class MDIParent extends JFrame{
 			break;
 		
 		case ADD_PART:
-			
+			if(pol.canUserAccessFunction(name, "part.add")==false){
+				displayChildMessage("Sorry "+name+" you don't have access");
+				break;
+			}
 			Part pAdd = new Part();
 			
 			partList.addPartToList(pAdd);
@@ -166,6 +183,11 @@ public class MDIParent extends JFrame{
 			break;
 			
 		case DELETE_PART:
+			
+			if(pol.canUserAccessFunction(name, "part.delete")==false){
+				displayChildMessage("Sorry "+name+" you don't have access");
+				break;
+			}
 			//first remove part, from the list
 			Part pDelete = ((PartListView)caller).getSelectedPart();
 			partList.removePartFromList(pDelete);
@@ -194,26 +216,58 @@ public class MDIParent extends JFrame{
 	    	WarehousePartDetailView vWPart = new WarehousePartDetailView("", wp, this);
 			openMDIChild(vWPart);
 			break;
-			
+		/*
 		case LOGIN_AS_BOB:
-			//Verify u = new Verify();
-			User user = new User("bob", "123456", "Boberino");
 			
-			try {
+			User user = new User("bob", "123456", "Boberino");
+			try {			
 				id = u.login(user.getLogin(), user.getPasswordHash());
-				displayChildMessage("Hello bob" + id);
+			
+				displayChildMessage("Hello bob ");
+				
 			} catch (SecurityException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 				displayChildMessage("Unable to login as bob");
 			}
 			break;
-		
+			*/
+			
+		/*
+		case LOGIN_AS_SUE:
+			//Verify u = new Verify();
+			User user1 = new User("sue", "password", "pur-sue");
+			
+			try {
+				id = u.login(user1.getLogin(), user1.getPasswordHash());
+				boolean check = pol.canUserAccessFunction(user1.getLogin(), "part.view");
+				displayChildMessage("Hello Sue" + check);
+			} catch (SecurityException e) {
+				//e.printStackTrace();
+				displayChildMessage("Unable to login as sue");
+			}
+			break;
+			
+		case LOGIN_AS_RAGNAR:
+			//Verify u = new Verify();
+			User user2 = new User("ragnar", "viking4life", "ragBrok");
+			
+			try {
+				id = u.login(user2.getLogin(), user2.getPasswordHash());
+				boolean check = pol.canUserAccessFunction(user2.getLogin(), "part.add");
+				displayChildMessage("Hello Ragnar" + check);
+			} catch (SecurityException e) {
+				//e.printStackTrace();
+				displayChildMessage("Unable to login as ragnar");
+			}
+			break;
 		case LOGOUT:
 			
 			u.logout(id);
 			displayChildMessage("Logged out");
 			break;
+			*/
 		}
+		
 	
 		
 	}
@@ -309,6 +363,10 @@ public class MDIParent extends JFrame{
 		openViews.remove(child);
 	}
 	
+
+	public void getUserName(String Name){
+		this.name = Name;
+	}
 
 
 }
