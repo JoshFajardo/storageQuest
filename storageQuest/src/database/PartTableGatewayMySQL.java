@@ -15,6 +15,7 @@ import javax.sql.DataSource;
 
 
 
+
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import models.Part;
@@ -74,14 +75,19 @@ public class PartTableGatewayMySQL implements PartTableGateway {
 	}
 
 	@Override
-	public Part fetchPart(long id) throws GatewayException {
+	public Part fetchPart(long id, boolean flag) throws GatewayException {
 		Part p = null;
 		PreparedStatement st = null;
 		ResultSet rs = null;
+		if(flag){
+			System.out.println("locked");
+			
+		}
 		try {
 			//fetch part
 			conn.setAutoCommit(false);
-			st = conn.prepareStatement("select * from part where id = ? ");
+			conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+			st = conn.prepareStatement("select * from part where id = ? For Update");
 			st.setLong(1, id);
 			rs = st.executeQuery();
 			//should only be 1
@@ -195,9 +201,9 @@ public class PartTableGatewayMySQL implements PartTableGateway {
 		PreparedStatement st = null;
 		
 		try {
-			conn.setAutoCommit(false);
+			//conn.setAutoCommit(false);
 			
-			conn.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+			//conn.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
 			
 			st = conn.prepareStatement("update part "
 					+ " set part_name = ?, part_number = ?, vendor = ?, vendor_part_num = ?, unit_quanitity = ? "
@@ -209,7 +215,7 @@ public class PartTableGatewayMySQL implements PartTableGateway {
 			st.setString(5, p.getUnitQuanitity());
 			st.setLong(6, p.getId());
 			st.executeUpdate();
-			
+			conn.commit();
 			
 		} catch (SQLException e) {
 			throw new GatewayException(e.getMessage());
@@ -219,8 +225,8 @@ public class PartTableGatewayMySQL implements PartTableGateway {
 				if(st != null)
 					st.close();
 					
-					//conn.commit();
-					//conn.setAutoCommit(true);
+					
+					conn.setAutoCommit(true);
 			} catch (SQLException e) {
 				throw new GatewayException("SQL Error: " + e.getMessage());
 			}
@@ -327,6 +333,13 @@ public class PartTableGatewayMySQL implements PartTableGateway {
 		}
 		
 		return ret;
+	}
+
+
+	@Override
+	public boolean partAlreadyExists(int i, String partName, String partNumber) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 }

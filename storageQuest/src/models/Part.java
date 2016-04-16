@@ -62,7 +62,7 @@ public class Part extends Observable {
 				this.setId(gateway.insertPart(this));
 			}
 			else{
-				orig = gateway.fetchPart(this.getId());
+				orig = gateway.fetchPart(this.getId(),false);
 				
 				gateway.savePart(this);
 			}
@@ -208,6 +208,44 @@ public class Part extends Observable {
 		this.gateway = gateway;
 	}
 	
+	public boolean lock()throws GatewayException{
+
+		//if insert, check if this warehouse's full name already exists in the database
+		//if so then cancel update 
+
+		if(this.getId() == 0) {
+			if(gateway.partAlreadyExists(0, this.getPartName(), this.getPartNumber()))
+				throw new GatewayException(this.getPartName() + " is already in the database");
+		}
+
+		try {
+		//if id is 0 then this is a new warehouse to insert, else its an update
+		if(this.getId() == 0) {
+		//set id to the long returned by insertwarehouse
+		this.setId(gateway.insertPart(this));
+		} 
+		else {
+		//fetch warehouse from db table in case this fails
+		//try to save to the database
+		gateway.savePart(this);
+		}
+		//if gateway ok then notify observers
+		notifyObservers();
+		} catch(GatewayException e) {
+		//if fails then try to refetch model fields from the database
+		throw new GatewayException("Error");
+
+//			throw new GatewayException("Error trying to save the Part object!");
+		}	
+
+		return true;
+		}
+
+	public void setLock(Part p) throws GatewayException{
+
+		gateway.fetchPart(p.getId(), true);
+
+		}
 	@Override
 	public String toString(){
 		String ret = " Part: "+partName;

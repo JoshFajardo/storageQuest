@@ -187,7 +187,8 @@ public class PartDetailView extends MDIChild implements Observer {
 		
 		//tell model that update is done (in case it needs to notify observers
 		try {
-			myPart.finishUpdate();
+			
+			myPart.lock();
 			setChanged(false);
 			
 		} catch (GatewayException e) {
@@ -195,7 +196,11 @@ public class PartDetailView extends MDIChild implements Observer {
 			parent.displayChildMessage(e.getMessage());
 			return false;
 		}
-		
+		try{
+		   myPart.finishUpdate();
+		}catch(GatewayException e){
+			parent.displayChildMessage(e.getMessage());
+		}
 		parent.displayChildMessage("Changes saved");
 		return true;
 	}

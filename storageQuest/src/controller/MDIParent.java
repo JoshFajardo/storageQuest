@@ -132,7 +132,11 @@ public class MDIParent extends JFrame{
 			}
 			Part p = ((PartListView)caller).getSelectedPart();
 			PartDetailView PartView = new PartDetailView(p.getPartName(),p,this);
-			
+			try{
+				p.setLock(p);
+			}catch(GatewayException e){
+				System.err.println(e.getMessage());		
+			}
 			openMDIChild(PartView);
 			break;
 			
