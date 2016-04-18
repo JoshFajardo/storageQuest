@@ -25,7 +25,7 @@ public class WarehousePart extends Observable implements Observer {
 	public WarehousePart(Warehouse w, Part p){
 		owner = w;
 		part = p;
-		//quantity = wp;
+		quantity = getQuantity();
 		ownerStartDate = new Date();
 	}
 	
@@ -44,6 +44,7 @@ public class WarehousePart extends Observable implements Observer {
 	}
 	
 	public int getQuantity(){
+		
 		return quantity;
 	}
 	public void setQuantity(int testQ){

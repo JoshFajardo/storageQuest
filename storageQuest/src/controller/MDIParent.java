@@ -34,7 +34,10 @@ import models.WarehouseList;
 import models.Part;
 import models.PartList;
 import models.WarehousePart;
-
+import reports.ReportException;
+import reports.ReportGatewayMySQL;
+import reports.WarehouseReportExcel;
+import reports.WarehouseReportPDF;
 import views.PartDetailView;
 import views.PartListView;
 import views.WarehousePartDetailView;
@@ -220,6 +223,32 @@ public class MDIParent extends JFrame{
 	    	WarehousePartDetailView vWPart = new WarehousePartDetailView("", wp, this);
 			openMDIChild(vWPart);
 			break;
+			
+		case WAREHOUSE_REPORT_PDF:
+			try{
+				WarehouseReportPDF report = new WarehouseReportPDF(new ReportGatewayMySQL());
+				report.generateReport();
+				report.outputReportToFile("/Users/public/Desktop/report.pdf");
+				report.close();
+			}catch (GatewayException | ReportException e) {
+				this.displayChildMessage(e.getMessage());
+				return;
+			}
+			break;
+			
+		case WAREHOUSE_REPORT_EXCEL:
+			try{
+				WarehouseReportExcel report = new WarehouseReportExcel(new ReportGatewayMySQL());
+				report.generateReport();
+				report.outputReportToFile("/Users/public/Desktop/report.xls");
+				report.close();
+			}catch(GatewayException | ReportException e){
+				this.displayChildMessage(e.getMessage());
+				return;
+			}
+			
+			
+		
 		/*
 		case LOGIN_AS_BOB:
 			

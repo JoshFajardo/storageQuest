@@ -190,17 +190,20 @@ public class PartDetailView extends MDIChild implements Observer {
 			
 			myPart.lock();
 			setChanged(false);
+			myPart.finishUpdate();
 			
 		} catch (GatewayException e) {
 			refreshFields();
 			parent.displayChildMessage(e.getMessage());
 			return false;
 		}
+		
+		/*
 		try{
 		   myPart.finishUpdate();
 		}catch(GatewayException e){
 			parent.displayChildMessage(e.getMessage());
-		}
+		}*/
 		parent.displayChildMessage("Changes saved");
 		return true;
 	}

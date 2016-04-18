@@ -188,6 +188,31 @@ public class MDIMenu extends JMenuBar {
 		menu.add(menuItem);
 		this.add(menu);
 		
+		menu = new JMenu("Reports");
+		menuItem = new JMenuItem("PDF Example");
+		menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e){
+				parent.doCommand(MenuCommands.WAREHOUSE_REPORT_PDF, null);
+			}
+				
+		});
+		menu.add(menuItem);
+		
+		menuItem = new JMenuItem("Excel Example");
+		menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				parent.doCommand(MenuCommands.WAREHOUSE_REPORT_EXCEL, null);
+			}
+		});
+		menu.add(menuItem);
+		this.add(menu);
+		
+		
+		
+		
+		
 		
 	}
 }
