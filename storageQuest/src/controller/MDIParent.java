@@ -228,7 +228,7 @@ public class MDIParent extends JFrame{
 			try{
 				WarehouseReportPDF report = new WarehouseReportPDF(new ReportGatewayMySQL());
 				report.generateReport();
-				report.outputReportToFile("/Users/public/Desktop/report.pdf");
+				report.outputReportToFile("/Users/public/Desktop/report1.pdf");
 				report.close();
 			}catch (GatewayException | ReportException e) {
 				this.displayChildMessage(e.getMessage());
